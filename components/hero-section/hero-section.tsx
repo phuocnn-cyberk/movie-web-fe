@@ -1,76 +1,63 @@
 "use client";
 
 import React, { useState } from "react";
-import { LettersPullUp } from "@/components/ui/text-pull-up";
-import { TextFade } from "@/components/ui/text-fade";
 import { SocialsDialog } from "@/components/common/socials";
 
 export const HeroSection: React.FC = () => {
   const [isSocialsDialogOpen, setIsSocialsDialogOpen] = useState(false);
+
   return (
     <section
       id="home"
-      className="relative flex items-center justify-center w-full min-h-[calc(100vh-68px)] overflow-hidden px-4 py-32"
+      className="relative w-full h-screen overflow-hidden bg-black flex flex-col justify-end"
     >
       {/* Background Video */}
       <video
-        className="absolute  w-full h-full object-cover z-0"
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
         src="/video/hero-bg.webm"
         autoPlay
         loop
         muted
         playsInline
       />
-      {/* Overlay for better text visibility */}
-      <div className="absolute inset-0 bg-gradient-to-b from-helix-black to-helix-blue-dark opacity-60 z-10 backdrop-blur-sm" />
-      {/* Content */}
-      <div className="relative z-20 flex flex-col items-center justify-center translate-y-[-10vh] text-center w-full max-w-3xl mx-auto">
-        <div className="mb-6 leading-[1.2]">
-          <div className="flex flex-wrap justify-center items-center gap-2">
-            <LettersPullUp
-              text="The"
-              className="text-white text-[32px] md:text-[64px] leading-[1.2] font-normal"
-            />
-            <LettersPullUp
-              text="Stablecoin"
-              className="text-accent text-[32px] md:text-[64px] leading-[1.2] font-normal"
-            />
-          </div>
-          <div className="flex flex-wrap justify-center items-center gap-2">
-            <LettersPullUp
-              text="For a"
-              className="text-white text-[32px] md:text-[64px] leading-[1.2] font-normal"
-            />
-            <LettersPullUp
-              text="Stable Future"
-              className="text-accent text-[32px] md:text-[64px] leading-[1.2] font-normal"
-            />
-          </div>
-        </div>
 
-        <TextFade direction="up">
-          <div className="mb-8">
-            <p className="text-white text-base md:text-xl font-normal">
-              HELIX&apos;s USHD combines the composability of DeFi
-              <br className="hidden md:block" />
-              with the confidence of TradFi
-            </p>
-          </div>
-        </TextFade>
+      {/* Optional: Play Ring Icon */}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        <img
+          src="/icons/play-ring.svg"
+          alt="Play background icon"
+          className="w-64 h-64 opacity-10"
+        />
+      </div>
 
-        <TextFade direction="up">
-          <SocialsDialog
-            open={isSocialsDialogOpen}
-            onOpenChange={setIsSocialsDialogOpen}
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black z-20" />
+
+      {/* Bottom Content */}
+      <div className="relative z-30 text-center max-w-3xl mx-auto px-4 pb-20">
+        <h1 className="text-white text-[28px] md:text-[48px] font-bold mb-4">
+          The Best Streaming Experience
+        </h1>
+
+        <p className="text-gray-300 text-sm md:text-lg mb-3">
+          StreamVibe is the best streaming experience for watching your favorite movies and shows on demand, anytime, anywhere. With StreamVibe, you can enjoy a wide variety of content, including the latest blockbusters, classic movies, popular TV shows, and more.
+        </p>
+
+        <p className="text-gray-300 text-sm md:text-lg mb-8">
+          You can also create your own watchlists, so you can easily find the content you want to watch.
+        </p>
+
+        <SocialsDialog
+          open={isSocialsDialogOpen}
+          onOpenChange={setIsSocialsDialogOpen}
+        >
+          <button
+            className="bg-red-600 text-white hover:bg-red-700 transition-colors text-sm md:text-base font-medium py-2 px-6 rounded-md"
+            onClick={() => setIsSocialsDialogOpen(true)}
           >
-            <button
-              className=" bg-accent text-base md:text-lg hover:bg-accent/90 text-white  py-1 md:py-2 px-4 rounded-full transition-colors duration-200"
-              onClick={() => setIsSocialsDialogOpen(true)}
-            >
-              Start Exploring
-            </button>
-          </SocialsDialog>
-        </TextFade>
+            Start Watching Now
+          </button>
+        </SocialsDialog>
       </div>
     </section>
   );

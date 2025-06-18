@@ -6,11 +6,12 @@ import { SpotlightSection } from "@/components/spotlight-section/spotlight-secti
 import { ConfidenceSection } from "@/components/confidence-section/confidence-section";
 import { FAQSection } from "@/components/faq-section/faq-section";
 import { RWASection } from "@/components/rwa-section/rwa-section";
-import { PartnersSection } from "@/components/partners-section/partners-section";
+import CategorySlider from "@/components/partners-section/partners-section";
 import { DefiPartnersSection } from "@/components/partners-section/defi-partners-section";
 import { Footer } from "../components/common/footer";
 import { WhySection } from "@/components/why-section/why-section";
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import { StreamingDevicesSection } from "@/components/partners-section/devices";
 
 export default function Home() {
   return (
@@ -19,7 +20,8 @@ export default function Home() {
       <FloatingNav />
       <main className="w-full dark:bg-helix-black">
         <HeroSection />
-        <PartnersSection />
+        <CategorySlider />
+        <StreamingDevicesSection />
         <MilestonesSection />
         <ConfidenceSection />
         <ProductSection />
