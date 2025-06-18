@@ -10,14 +10,14 @@ import CategorySlider from "@/components/partners-section/partners-section";
 import { DefiPartnersSection } from "@/components/partners-section/defi-partners-section";
 import { Footer } from "../components/common/footer";
 import { WhySection } from "@/components/why-section/why-section";
-import { FloatingNav } from "@/components/ui/floating-navbar";
+import { FloatingHeader } from "@/components/ui/floating-navbar";
 import { StreamingDevicesSection } from "@/components/partners-section/devices";
 
 export default function Home() {
   return (
     <div className="w-full min-h-screen overflow-x-hidden dark:bg-helix-black">
       <Header />
-      <FloatingNav />
+      <FloatingHeader />
       <main className="w-full dark:bg-helix-black">
         <HeroSection />
         <CategorySlider />
