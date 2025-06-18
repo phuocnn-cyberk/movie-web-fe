@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image"; // ✅ Dùng Image của Next.js
 import { SocialsDialog } from "@/components/common/socials";
 
 export const HeroSection: React.FC = () => {
@@ -23,10 +24,12 @@ export const HeroSection: React.FC = () => {
 
       {/* Optional: Play Ring Icon */}
       <div className="absolute inset-0 flex items-center justify-center z-10">
-        <img
+        <Image
           src="/icons/play-ring.svg"
           alt="Play background icon"
-          className="w-64 h-64 opacity-10"
+          width={256}
+          height={256}
+          className="opacity-10"
         />
       </div>
 
@@ -40,11 +43,15 @@ export const HeroSection: React.FC = () => {
         </h1>
 
         <p className="text-gray-300 text-sm md:text-lg mb-3">
-          StreamVibe is the best streaming experience for watching your favorite movies and shows on demand, anytime, anywhere. With StreamVibe, you can enjoy a wide variety of content, including the latest blockbusters, classic movies, popular TV shows, and more.
+          StreamVibe is the best streaming experience for watching your favorite
+          movies and shows on demand, anytime, anywhere. With StreamVibe, you can
+          enjoy a wide variety of content, including the latest blockbusters,
+          classic movies, popular TV shows, and more.
         </p>
 
         <p className="text-gray-300 text-sm md:text-lg mb-8">
-          You can also create your own watchlists, so you can easily find the content you want to watch.
+          You can also create your own watchlists, so you can easily find the
+          content you want to watch.
         </p>
 
         <SocialsDialog

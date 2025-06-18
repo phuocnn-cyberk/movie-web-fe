@@ -1,38 +1,40 @@
-// components/CategorySlider.tsx
 "use client";
 
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 const categories = [
   {
     name: "Action",
-    posters: ["/images/action1.jpg", "/images/action2.jpg", "/images/action3.jpg", "/images/action4.jpg"],
+    posters: ["/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png"],
   },
   {
     name: "Adventure",
-    posters: ["/images/adv1.jpg", "/images/adv2.jpg", "/images/adv3.jpg", "/images/adv4.jpg"],
+    posters: ["/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png"],
   },
   {
     name: "Comedy",
-    posters: ["/images/comedy1.jpg", "/images/comedy2.jpg", "/images/comedy3.jpg", "/images/comedy4.jpg"],
+    posters: ["/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png"],
   },
   {
     name: "Drama",
-    posters: ["/images/drama1.jpg", "/images/drama2.jpg", "/images/drama3.jpg", "/images/drama4.jpg"],
+    posters: ["/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png"],
   },
   {
     name: "Horror",
-    posters: ["/images/horror1.jpg", "/images/horror2.jpg", "/images/horror3.jpg", "/images/horror4.jpg"],
+    posters: ["/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png", "/images/helix-token.png"],
   },
 ];
 
 export default function CategorySlider() {
   const [sliderRef, instanceRef] = useKeenSlider({
-    slides: {
-      perView: 3.5,
-      spacing: 16,
+    slides: { perView: 1.5, spacing: 16 },
+    breakpoints: {
+      "(min-width: 768px)": {
+        slides: { perView: 3.5, spacing: 16 },
+      },
     },
   });
 
@@ -42,7 +44,7 @@ export default function CategorySlider() {
         <div>
           <h2 className="text-2xl font-bold">Explore our wide variety of categories</h2>
           <p className="text-sm text-gray-400">
-            Whether you're looking for a comedy to make you laugh, a drama to make you think, or a documentary to learn something new
+            Whether you&apos;re looking for a comedy to make you laugh, a drama to make you think, or a documentary to learn something new
           </p>
         </div>
         <div className="flex gap-2">
@@ -67,10 +69,12 @@ export default function CategorySlider() {
             <div className="bg-gray-900 rounded-lg p-4">
               <div className="grid grid-cols-2 gap-2 mb-4">
                 {category.posters.map((poster, i) => (
-                  <img
+                  <Image
                     key={i}
                     src={poster}
                     alt={`${category.name} poster ${i}`}
+                    width={300}
+                    height={100}
                     className="w-full h-24 object-cover rounded"
                   />
                 ))}
