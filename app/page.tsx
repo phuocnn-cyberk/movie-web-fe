@@ -11,6 +11,10 @@ import { DefiPartnersSection } from "@/components/partners-section/defi-partners
 import { Footer } from "../components/common/footer";
 import { WhySection } from "@/components/why-section/why-section";
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import {Banner} from "@/components/movie-show/Banner";
+import { GenreSection } from "@/components/movie-show/GenreSection";
+import { MovieCarousel } from "@/components/movie-show/MovieCarousel";
+import { MovieShow } from "@/components/movie-show/movieShow";
 
 export default function Home() {
   return (
@@ -18,7 +22,8 @@ export default function Home() {
       <Header />
       <FloatingNav />
       <main className="w-full dark:bg-helix-black">
-        <HeroSection />
+        <MovieShow/>
+        {/* <HeroSection />
         <PartnersSection />
         <MilestonesSection />
         <ConfidenceSection />
@@ -27,7 +32,7 @@ export default function Home() {
         <DefiPartnersSection />
         <FAQSection />
         <SpotlightSection />
-        <WhySection />
+        <WhySection /> */}
       </main>
       <Footer />
     </div>
