@@ -7,7 +7,7 @@ export function MovieShow(){
     return (
         <div>
             <Banner />
-            <GenreSection />
+            {/* <GenreSection /> */}
             <MovieCarousel title="Popular Top 10 In Genres" />
             <MovieCarousel title="Trending Now" />
             <MovieCarousel title="New Releases" />

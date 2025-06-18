@@ -22,8 +22,8 @@ export default function Home() {
       <Header />
       <FloatingNav />
       <main className="w-full dark:bg-helix-black">
-        <MovieShow/>
-        {/* <HeroSection />
+        {/* <MovieShow/> */}
+        <HeroSection />
         <PartnersSection />
         <MilestonesSection />
         <ConfidenceSection />
@@ -32,7 +32,7 @@ export default function Home() {
         <DefiPartnersSection />
         <FAQSection />
         <SpotlightSection />
-        <WhySection /> */}
+        <WhySection />
       </main>
       <Footer />
     </div>
