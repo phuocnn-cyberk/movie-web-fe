@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import logo from "@/public/logos/helix-logo-white.svg";
+import streamVibesLogo from "@/public/logos/stream-vibe-logo.svg";
 import background2 from "@/public/images/bg-footer-2.svg";
 import Link from "next/link";
 
@@ -87,25 +87,17 @@ const legalLinks = [
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="overflow-hidden bg-helix-black relative border-t-2 border-helix-blue/60">
-      <div className="absolute w-full h-[2px] bg-helix-blue/60 bottom-30 md:bottom-22" />
+    <footer className="overflow-hidden bg-black relative border-t border-gray-600/60">
+      <div className="absolute w-full h-[2px] bg-gray-600/60 bottom-30 md:bottom-22" />
       <Image
         src={background2}
         alt="Background"
         className="absolute right-0 scale-105 h-full"
       />
-      <section className="w-full flex justify-center px-2 md:px-4 mx-auto pb-8 pt-8 md:pt-20 max-md:w-full max-md:ml-0">
+      <section className="w-full flex justify-center mx-auto pb-8 pt-8 md:pt-20 px-20 max-md:w-full max-md:px-5">
         <div className="z-10 w-[1230px] flex flex-col text-sm mx-auto ">
-          <div className="flex md:flex-row flex-col gap-y-10 max-md:justify-center items-center  md:gap-30 md:items-start w-full mx-auto ">
-            <div>
-              <Image src={logo} alt="Helix Logo" />
-              {/* <Button
-              className="text-white font-normal self-stretch bg-accent my-auto px-4 py-2 rounded-[100px] hover:opacity-80 transition-opacity"
-              aria-label="Launch application"
-            >
-              Launch App
-            </Button> */}
-            </div>
+          <div className="flex md:flex-row flex-col gap-y-10 max-md:justify-center items-center md:gap-30 md:items-start w-full mx-auto ">
+            <Image src={streamVibesLogo} alt="Stream Vibes Logo" />
             <nav
               className="flex  w-full max-w-[484px]  max-md:text-center text-white flex-wrap max-sm:mx-auto"
               aria-label="Footer navigation"
@@ -116,11 +108,11 @@ export const Footer: React.FC = () => {
             </nav>
           </div>
           <div className="flex md:flex-row flex-col justify-between items-center max-md:mx-auto mt-34">
-            <p className="text-helix-blue-light">
+            <p className="text-gray-400">
               This page has ended, but the possibilities remain endless.
             </p>
-            <p className="text-helix-blue-light mt-6  md:absolute md:right-24">
-              © 2025 Helix
+            <p className="text-gray-400 mt-6  md:absolute md:right-24">
+              © 2025 Stream Vibes
             </p>
           </div>
         </div>
