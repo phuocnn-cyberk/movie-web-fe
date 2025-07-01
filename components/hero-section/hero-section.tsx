@@ -2,7 +2,6 @@
 
   import React from "react";
 import { LettersPullUp } from "@/components/ui/text-pull-up";
-import { TextFade } from "@/components/ui/text-fade";
 import Image from "next/image";
 import homeBg from "@/public/images/home-bg.png";
 

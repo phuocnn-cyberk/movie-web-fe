@@ -156,12 +156,10 @@ const allTabs = [
 export const PartnersSection: React.FC = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!api) return;
 
-    setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap() + 1);
 
     api.on("select", () => {
@@ -171,11 +169,6 @@ export const PartnersSection: React.FC = () => {
 
   const scrollPrev = () => api?.scrollPrev();
   const scrollNext = () => api?.scrollNext();
-
-  const getCurrentTabData = () => {
-    const tabIndex = (current - 1) % allTabs.length;
-    return allTabs[tabIndex]?.data || popularCategories;
-  };
 
   const getCurrentTabName = () => {
     const tabIndex = (current - 1) % allTabs.length;
@@ -196,7 +189,7 @@ export const PartnersSection: React.FC = () => {
               Explore our wide variety of categories
             </h1>
             <p className="text-[#999999] font-normal text-lg leading-[1.5em] text-left">
-              Whether you're looking for a comedy to make you laugh, a drama to make you think, or a documentary to learn something new
+              Whether you&apos;re looking for a comedy to make you laugh, a drama to make you think, or a documentary to learn something new
             </p>
           </div>
 
