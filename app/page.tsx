@@ -9,14 +9,12 @@ import { RWASection } from "@/components/rwa-section/rwa-section";
 import { PartnersSection } from "@/components/partners-section/partners-section";
 import { DefiPartnersSection } from "@/components/partners-section/defi-partners-section";
 import { Footer } from "../components/common/footer";
-import { FloatingNav } from "@/components/ui/floating-navbar";
 import { FreeTrial } from "@/components/common/free-trial";
 
 export default function Home() {
   return (
     <div className="w-full min-h-screen overflow-x-hidden dark:bg-[#202020]">
       <Header />
-      <FloatingNav />
       <main className="w-full dark:bg-[#202020]">
         <HeroSection />
         <PartnersSection />
