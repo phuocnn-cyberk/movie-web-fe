@@ -8,18 +8,10 @@ import {
 } from "motion/react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export const FloatingNav = ({ className }: { className?: string }) => {
   const { scrollYProgress } = useScroll();
   const [visible, setVisible] = useState(false);
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     // Check if current is not undefined and is a number
@@ -57,35 +49,13 @@ export const FloatingNav = ({ className }: { className?: string }) => {
           className
         )}
       >
-        <DropdownMenu onOpenChange={setIsAboutOpen}>
-          <DropdownMenuTrigger className="text-sm text-helix-blue dark:text-white hover:text-accent transition-colors duration-200 cursor-pointer flex items-center gap-1">
-            About
-            <div>
-              {isAboutOpen ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="mt-7 bg-[#F8FEFF] dark:bg-helix-blue">
-            <DropdownMenuItem asChild>
-              <Link
-                href="https://apply.workable.com/helixfinance/"
-                className="w-full"
-                target="_blank"
-              >
-                Career
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="#blogs" className="w-full">
-                Blogs
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
+        <Link
+          href="/"
+          className="text-sm text-helix-blue dark:text-white hover:text-accent transition-colors duration-200"
+          aria-label="Home section"
+        >
+          Home
+        </Link>
         <Link
           href="#products"
           className="text-sm text-helix-blue dark:text-white hover:text-accent transition-colors duration-200"

@@ -87,7 +87,7 @@ const legalLinks = [
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="overflow-hidden bg-black relative border-t border-gray-600/60">
+    <footer className="overflow-hidden bg-[#111111] relative border-t border-gray-600/60">
       <div className="absolute w-full h-[2px] bg-gray-600/60 bottom-30 md:bottom-22" />
       <Image
         src={background2}

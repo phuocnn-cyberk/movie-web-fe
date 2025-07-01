@@ -1,26 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import helixLogo from "@/public/logos/helix-logo.svg";
-import helixLogoDark from "@/public/logos/helix-logo-white.svg";
+import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
+import streamVibeLogoDark from "@/public/logos/stream-vibe-logo.svg";
 import Image from "next/image";
-import { Button } from "../ui/button";
 import SunLogo from "@/public/logos/sun.svg";
 import Link from "next/link";
-import { ChevronDown, ChevronUp, Menu, Moon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SocialsDialog } from "./socials";
+import { Menu, Moon } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export const Header: React.FC = () => {
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const [isExploreOpen, setIsExploreOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isSocialsDialogOpen, setIsSocialsDialogOpen] = useState(false);
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -106,9 +96,9 @@ export const Header: React.FC = () => {
 
           <Link href="/" aria-label="Go to homepage">
             <Image
-              src={isDarkMode ? helixLogoDark : helixLogo}
-              alt="HELIX Logo"
-              className="w-[82px] self-stretch shrink-0 my-auto cursor-pointer hover:opacity-80 transition-opacity duration-200"
+              src={isDarkMode ? streamVibeLogoDark : streamVibeLogo}
+              alt="StreamVibe Logo"
+              className="w-full shrink-0 my-auto cursor-pointer"
             />
           </Link>
         </div>
@@ -118,34 +108,9 @@ export const Header: React.FC = () => {
           className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 bg-white dark:bg-white/10 text-white shadow-[0px_0px_4px_rgba(0,0,0,0.1)] dark:shadow-[0px_0px_4px_rgba(255,255,255,0.1)] items-center gap-8 whitespace-nowrap px-6 py-2.5 rounded-full"
           aria-label="Main navigation"
         >
-          <DropdownMenu onOpenChange={setIsAboutOpen}>
-            <DropdownMenuTrigger className="text-helix-blue dark:text-white self-stretch my-auto hover:text-accent transition-colors duration-200 cursor-pointer flex items-center gap-1">
-              About
-              <div>
-                {isAboutOpen ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="mt-7 bg-[#F8FEFF] dark:bg-helix-blue">
-              <DropdownMenuItem>
-                <Link
-                  href="https://apply.workable.com/helixfinance/"
-                  target="_blank"
-                  className="w-full"
-                >
-                  Career
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="#blogs" className="w-full">
-                  Blogs
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/" className="text-helix-blue dark:text-white self-stretch my-auto hover:text-accent transition-colors duration-200">
+            Home
+          </Link>
           <Link
             href="#products"
             className="text-helix-blue dark:text-white self-stretch my-auto hover:text-accent transition-colors duration-200"
@@ -202,50 +167,8 @@ export const Header: React.FC = () => {
               </div>
             </div>
           </button>
-          <DropdownMenu onOpenChange={setIsExploreOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                className="text-white font-normal self-stretch gap-2 bg-accent my-auto px-4 py-2 rounded-[100px] hover:opacity-80 transition-opacity flex items-center"
-                aria-label="Launch application"
-              >
-                Start Exploring
-                <div>
-                  {isExploreOpen ? (
-                    <ChevronUp className="w-4 h-4" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4" />
-                  )}
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="mt-5 bg-[#F8FEFF] dark:bg-helix-blue">
-              <DropdownMenuItem>
-                <Link href="#launch-app" className="w-full">
-                  Launch app (Soon)
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  setIsSocialsDialogOpen(true);
-                  setIsExploreOpen(false);
-                }}
-              >
-                <span className="w-full cursor-pointer">
-                  Join the community
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
-
-      {/* Socials Dialog - positioned outside dropdown */}
-      <SocialsDialog
-        open={isSocialsDialogOpen}
-        onOpenChange={setIsSocialsDialogOpen}
-      >
-        <div style={{ display: "none" }} />
-      </SocialsDialog>
     </header>
   );
 };

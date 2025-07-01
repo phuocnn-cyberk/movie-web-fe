@@ -1,244 +1,369 @@
-import Image from "next/image";
-import { TextFade } from "@/components/ui/text-fade";
+'use client'
 
-// VCs
-import aptos from "@/public/logos/vcs/light/aptos.svg";
-import comma3 from "@/public/logos/vcs/light/comma3.svg";
-import gallet from "@/public/logos/vcs/light/gallet.svg";
-import neoclassic from "@/public/logos/vcs/light/neoclassic.svg";
-import newtribe from "@/public/logos/vcs/light/newtribe.svg";
-import saison from "@/public/logos/vcs/light/saison.svg";
-import shield from "@/public/logos/vcs/light/shield.svg";
-import superscrypt from "@/public/logos/vcs/light/superscrypt.svg";
-import synthetix from "@/public/logos/vcs/light/synthetix.svg";
-import taisu from "@/public/logos/vcs/light/taisu.svg";
-import ytwo from "@/public/logos/vcs/light/ytwo.svg";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselApi,
+} from '@/components/ui/carousel';
 
-// VCs Dark
-import aptosDark from "@/public/logos/vcs/dark/aptos.svg";
-import comma3Dark from "@/public/logos/vcs/dark/comma3.svg";
-import galletDark from "@/public/logos/vcs/dark/gallet.svg";
-import neoclassicDark from "@/public/logos/vcs/dark/neoclassic.svg";
-import newtribeDark from "@/public/logos/vcs/dark/newtribe.svg";
-import saisonDark from "@/public/logos/vcs/dark/saison.svg";
-import shieldDark from "@/public/logos/vcs/dark/shield.svg";
-import superscryptDark from "@/public/logos/vcs/dark/superscrypt.svg";
-import synthetixDark from "@/public/logos/vcs/dark/synthetix.svg";
-import taisuDark from "@/public/logos/vcs/dark/taisu.svg";
-import ytwoDark from "@/public/logos/vcs/dark/ytwo.svg";
-
-// Angels
-import algorand from "@/public/logos/angels/light/algorand.svg";
-import blocktower from "@/public/logos/angels/light/blocktower.svg";
-import fireblocks from "@/public/logos/angels/light/fireblocks.svg";
-import milken from "@/public/logos/angels/light/milken.svg";
-import phd from "@/public/logos/angels/light/phd.svg";
-import wave from "@/public/logos/angels/light/wave.svg";
-import xtream from "@/public/logos/angels/light/xtream.svg";
-
-// Angels Dark
-import algorandDark from "@/public/logos/angels/dark/algorand.svg";
-import blocktowerDark from "@/public/logos/angels/dark/blocktower.svg";
-import fireblocksDark from "@/public/logos/angels/dark/fireblocks.svg";
-import milkenDark from "@/public/logos/angels/dark/milken.svg";
-import phdDark from "@/public/logos/angels/dark/phd.svg";
-import waveDark from "@/public/logos/angels/dark/wave.svg";
-import xtreamDark from "@/public/logos/angels/dark/xtream.svg";
-
-const firstRowLogos = [
-  { src: aptos, srcDark: aptosDark, alt: "aptos" },
-  { src: comma3, srcDark: comma3Dark, alt: "comma3" },
-  { src: newtribe, srcDark: newtribeDark, alt: "newtribe" },
-  { src: superscrypt, srcDark: superscryptDark, alt: "superscrypt" },
-  { src: saison, srcDark: saisonDark, alt: "saison" },
-  { src: taisu, srcDark: taisuDark, alt: "taisu" },
-  { src: ytwo, srcDark: ytwoDark, alt: "ytwo" },
+// Tab 1: Popular Categories
+const popularCategories = [
+  { 
+    name: 'Action', 
+    poster: '/images/movie-posters/action-card.png',
+    description: 'Heart-pounding adventures and thrilling stunts',
+    count: '120+ Movies'
+  },
+  { 
+    name: 'Adventure', 
+    poster: '/images/movie-posters/adventure-card.png',
+    description: 'Epic journeys and exciting explorations',
+    count: '95+ Movies'
+  },
+  { 
+    name: 'Comedy', 
+    poster: '/images/movie-posters/comedy-card.png',
+    description: 'Laugh-out-loud moments and hilarious stories',
+    count: '150+ Movies'
+  },
+  { 
+    name: 'Drama', 
+    poster: '/images/movie-posters/drama-card.png',
+    description: 'Emotional stories that touch your heart',
+    count: '200+ Movies'
+  },
+  { 
+    name: 'Horror', 
+    poster: '/images/movie-posters/horror-card.png',
+    description: 'Spine-chilling thrills and scary moments',
+    count: '80+ Movies'
+  },
 ];
 
-const secondRowLogos = [
-  { src: shield, srcDark: shieldDark, alt: "shield" },
-  { src: neoclassic, srcDark: neoclassicDark, alt: "neoclassic" },
-  { src: synthetix, srcDark: synthetixDark, alt: "synthetix" },
-  { src: gallet, srcDark: galletDark, alt: "gallet" },
+// Tab 2: Trending Now
+const trendingCategories = [
+  { 
+    name: 'Sci-Fi', 
+    poster: '/images/movie-posters/action-card.png',
+    description: 'Futuristic worlds and advanced technology',
+    count: '85+ Movies'
+  },
+  { 
+    name: 'Thriller', 
+    poster: '/images/movie-posters/horror-card.png',
+    description: 'Suspenseful plots that keep you on edge',
+    count: '110+ Movies'
+  },
+  { 
+    name: 'Romance', 
+    poster: '/images/movie-posters/drama-card.png',
+    description: 'Love stories that warm your heart',
+    count: '90+ Movies'
+  },
+  { 
+    name: 'Fantasy', 
+    poster: '/images/movie-posters/adventure-card.png',
+    description: 'Magical realms and mythical creatures',
+    count: '75+ Movies'
+  },
+  { 
+    name: 'Mystery', 
+    poster: '/images/movie-posters/drama-card.png',
+    description: 'Puzzling plots and intriguing investigations',
+    count: '65+ Movies'
+  },
 ];
 
-// Combined VC logos for mobile
-const allVCLogos = [...firstRowLogos, ...secondRowLogos];
+// Tab 3: New Releases
+const newReleases = [
+  { 
+    name: 'Documentary', 
+    poster: '/images/movie-posters/drama-card.png',
+    description: 'Real-world stories and factual content',
+    count: '45+ Movies'
+  },
+  { 
+    name: 'Animation', 
+    poster: '/images/movie-posters/comedy-card.png',
+    description: 'Animated adventures for all ages',
+    count: '55+ Movies'
+  },
+  { 
+    name: 'Musical', 
+    poster: '/images/movie-posters/comedy-card.png',
+    description: 'Songs and dances that lift your spirits',
+    count: '35+ Movies'
+  },
+  { 
+    name: 'Crime', 
+    poster: '/images/movie-posters/action-card.png',
+    description: 'Criminal underworld and justice stories',
+    count: '70+ Movies'
+  },
+  { 
+    name: 'Biography', 
+    poster: '/images/movie-posters/drama-card.png',
+    description: 'Real-life stories of remarkable people',
+    count: '40+ Movies'
+  },
+];
 
-const angelLogos = [
-  { src: phd, srcDark: phdDark, alt: "phd" },
-  { src: blocktower, srcDark: blocktowerDark, alt: "blocktower" },
-  { src: milken, srcDark: milkenDark, alt: "milken" },
-  { src: wave, srcDark: waveDark, alt: "wave" },
-  { src: algorand, srcDark: algorandDark, alt: "algorand" },
-  { src: xtream, srcDark: xtreamDark, alt: "xtream" },
-  { src: fireblocks, srcDark: fireblocksDark, alt: "fireblocks" },
+// Tab 4: Must Watch
+const mustWatch = [
+  { 
+    name: 'War', 
+    poster: '/images/movie-posters/action-card.png',
+    description: 'Epic battles and heroic sacrifices',
+    count: '50+ Movies'
+  },
+  { 
+    name: 'Western', 
+    poster: '/images/movie-posters/adventure-card.png',
+    description: 'Wild west adventures and cowboys',
+    count: '30+ Movies'
+  },
+  { 
+    name: 'Sports', 
+    poster: '/images/movie-posters/drama-card.png',
+    description: 'Athletic achievements and team spirit',
+    count: '25+ Movies'
+  },
+  { 
+    name: 'Family', 
+    poster: '/images/movie-posters/comedy-card.png',
+    description: 'Wholesome entertainment for everyone',
+    count: '60+ Movies'
+  },
+  { 
+    name: 'History', 
+    poster: '/images/movie-posters/drama-card.png',
+    description: 'Historical events and period pieces',
+    count: '35+ Movies'
+  },
+];
+
+const allTabs = [
+  { name: 'Popular', data: popularCategories },
+  { name: 'Trending', data: trendingCategories },
+  { name: 'New', data: newReleases },
+  { name: 'Must Watch', data: mustWatch },
 ];
 
 export const PartnersSection: React.FC = () => {
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!api) return;
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
+
+  const scrollPrev = () => api?.scrollPrev();
+  const scrollNext = () => api?.scrollNext();
+
+  const getCurrentTabData = () => {
+    const tabIndex = (current - 1) % allTabs.length;
+    return allTabs[tabIndex]?.data || popularCategories;
+  };
+
+  const getCurrentTabName = () => {
+    const tabIndex = (current - 1) % allTabs.length;
+    return allTabs[tabIndex]?.name || 'Popular';
+  };
+
   return (
     <section
-      id="partners"
-      className="items-center pb-10 w-full  flex flex-col overflow-hidden pt-10 md:pt-20  px-20  max-md:px-5"
+      id="categories"
+      className="w-full flex flex-col overflow-hidden pt-20 pb-20 px-4 md:px-20"
     >
-      <div className="dark:hidden flex w-full px-4 md:px-17 pt-4 md:pt-12 pb-8 md:pb-16   max-w-[1350px] rounded-2xl flex-col items-stretch relative">
-        <TextFade direction="up">
-          <h1 className="text-helix-black text-5xl text-center max-md:text-2xl prose-h1:my-0">
-            Backed By
-          </h1>
-        </TextFade>
-      </div>
-
-      {/* Light theme */}
-      <div className="flex dark:hidden flex-col justify-center items-center">
-        {/* Desktop view - separate rows */}
-        <div className="hidden md:block w-full">
-          {/* First row of VC logos */}
-          <div className="w-full">
-            <div className="flex flex-row gap-4 justify-center">
-              {firstRowLogos.map((logo, index) => (
-                <Image key={index} src={logo.src} alt={logo.alt} />
-              ))}
-            </div>
+      <div className="max-w-[1597px] mx-auto w-full flex flex-col gap-20">
+        {/* Header Section */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-20 lg:gap-25">
+          {/* Text Container */}
+          <div className="flex flex-col gap-3.5 flex-1">
+            <h1 className="text-white font-bold text-4xl md:text-5xl lg:text-[38px] leading-[1.5em] text-left">
+              Explore our wide variety of categories
+            </h1>
+            <p className="text-[#999999] font-normal text-lg leading-[1.5em] text-left">
+              Whether you're looking for a comedy to make you laugh, a drama to make you think, or a documentary to learn something new
+            </p>
           </div>
-          {/* Second row of VC logos */}
-          <div className="w-full mt-4">
-            <div className="flex flex-row gap-4 justify-center">
-              {secondRowLogos.map((logo, index) => (
-                <Image key={index} src={logo.src} alt={logo.alt} />
-              ))}
-            </div>
-          </div>
-        </div>
 
-        {/* Mobile view - all VC logos together, 3 per row */}
-        <div className="md:hidden flex flex-wrap justify-center items-center gap-4 px-4 w-full">
-          {allVCLogos.map((logo, index) => (
-            <div
-              key={index}
-              className="w-[calc(33.333%-16px)] flex justify-center"
+          {/* Navigation Controls - Exact Figma Design */}
+          <div 
+            className="flex items-center gap-4 p-4 rounded-xl"
+            style={{ backgroundColor: '#0F0F0F', border: '1px solid #1F1F1F' }}
+          >
+            {/* Previous Button */}
+            <button
+              onClick={scrollPrev}
+              className="flex items-center justify-center gap-2.5 p-3.5 rounded-lg transition-colors duration-200 disabled:opacity-50"
+              style={{ backgroundColor: '#1A1A1A', border: '1px solid #1F1F1F' }}
+              disabled={!api?.canScrollPrev()}
             >
-              <Image
-                src={logo.src}
-                alt={logo.alt}
-                className="w-full h-auto object-contain"
-              />
+              <div className="w-7 h-7 flex items-center justify-center">
+                <ChevronLeft 
+                  className="text-white" 
+                  strokeWidth={2}
+                  style={{ width: '17.5px', height: '15.75px' }}
+                />
+              </div>
+            </button>
+
+            {/* Indicators - 4 Tabs */}
+            <div className="flex gap-[3px]" style={{ width: '81px' }}>
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="rounded-full transition-all duration-200"
+                  style={{
+                    height: '4px',
+                    backgroundColor: index === (current - 1) % 4 ? '#E50000' : '#333333',
+                    width: index === (current - 1) % 4 ? '23px' : 'auto',
+                    flex: index === (current - 1) % 4 ? 'none' : '1'
+                  }}
+                />
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
 
-      <div className="mt-16 flex dark:hidden w-full px-4 md:px-17  pt-4 md:pt-12  pb-8 md:pb-16   max-w-[1350px] rounded-2xl flex-col items-stretch relative">
-        <TextFade direction="up">
-          <h1 className="text-helix-black text-5xl text-center max-md:text-2xl">
-            Select Angels From
-          </h1>
-        </TextFade>
-      </div>
-
-      {/* Angels row */}
-      <div className="flex dark:hidden flex-col justify-center items-center">
-        {/* Desktop view */}
-        <div className="hidden md:flex flex-row gap-4 justify-center">
-          {angelLogos.map((logo, index) => (
-            <Image key={index} src={logo.src} alt={logo.alt} />
-          ))}
-        </div>
-        {/* Mobile view - 3 per row */}
-        <div className="md:hidden flex flex-wrap justify-center items-center gap-4 px-4 w-full">
-          {angelLogos.map((logo, index) => (
-            <div
-              key={index}
-              className="w-[calc(33.333%-16px)] flex justify-center"
+            {/* Next Button */}
+            <button
+              onClick={scrollNext}
+              className="flex items-center justify-center gap-2.5 p-3.5 rounded-lg transition-colors duration-200 disabled:opacity-50"
+              style={{ backgroundColor: '#1A1A1A', border: '1px solid #1F1F1F' }}
+              disabled={!api?.canScrollNext()}
             >
-              <Image
-                src={logo.src}
-                alt={logo.alt}
-                className="w-full h-auto object-contain "
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Dark theme */}
-      <div className="hidden dark:flex w-full px-4 md:px-17 pt-4 md:pt-12 pb-8 md:pb-16   max-w-[1350px] rounded-2xl flex-col items-stretch relative">
-        <TextFade direction="up">
-          <h1 className="text-white text-5xl text-center max-md:text-2xl">
-            Backed By
-          </h1>
-        </TextFade>
-      </div>
-
-      <div className="hidden dark:flex flex-col justify-center items-center">
-        {/* Desktop view - separate rows */}
-        <div className="hidden md:block w-full">
-          {/* First row of VC logos */}
-          <div className="w-full">
-            <div className="flex flex-row gap-4 justify-center">
-              {firstRowLogos.map((logo, index) => (
-                <Image key={index} src={logo.srcDark} alt={logo.alt} />
-              ))}
-            </div>
-          </div>
-          {/* Second row of VC logos */}
-          <div className="w-full mt-4">
-            <div className="flex flex-row gap-4 justify-center">
-              {secondRowLogos.map((logo, index) => (
-                <Image key={index} src={logo.srcDark} alt={logo.alt} />
-              ))}
-            </div>
+              <div className="w-7 h-7 flex items-center justify-center">
+                <ChevronRight 
+                  className="text-white" 
+                  strokeWidth={2}
+                  style={{ width: '21px', height: '17.5px' }}
+                />
+              </div>
+            </button>
           </div>
         </div>
 
-        {/* Mobile view - all VC logos together, 3 per row */}
-        <div className="md:hidden flex flex-wrap justify-center items-center gap-4 px-4 w-full">
-          {allVCLogos.map((logo, index) => (
-            <div
-              key={index}
-              className="w-[calc(33.333%-16px)] flex justify-center"
-            >
-              <Image
-                src={logo.srcDark}
-                alt={logo.alt}
-                className="w-full h-auto object-contain"
-              />
-            </div>
-          ))}
+        {/* Tab Indicator */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h2 className="text-white text-2xl font-semibold">
+              {getCurrentTabName()} Categories
+            </h2>
+            <div className="w-8 h-px bg-[#E50000]"></div>
+          </div>
+          <div className="text-[#999999] text-sm">
+            Tab {((current - 1) % 4) + 1} of 4
+          </div>
         </div>
-      </div>
 
-      <div className="mt-16 hidden dark:flex w-full px-4 md:px-17  pt-4 md:pt-12  pb-8 md:pb-16   max-w-[1350px] rounded-2xl flex-col items-stretch relative">
-        <TextFade direction="up">
-          <h1 className="text-white text-5xl text-center max-md:text-2xl">
-            Select Angels From
-          </h1>
-        </TextFade>
-      </div>
+        {/* Movie Categories Carousel */}
+        <Carousel
+          setApi={setApi}
+          opts={{
+            align: "start",
+            loop: true,
+            slidesToScroll: 4, // Scroll by 4 tabs (one complete set)
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-[30px]">
+            {/* Generate all tabs */}
+            {allTabs.map((tab, tabIndex) => 
+              tab.data.map((category, categoryIndex) => (
+                <CarouselItem 
+                  key={`${tab.name}-${category.name}`} 
+                  className="pl-[30px] basis-1/5 min-w-0"
+                >
+                  {/* Card - Exact Figma Design */}
+                  <div 
+                    className="flex flex-col p-[30px] rounded-xl hover:border-[#3A3A3A] transition-all duration-300 h-full group cursor-pointer"
+                    style={{ backgroundColor: '#1A1A1A', border: '1px solid #262626' }}
+                  >
+                    {/* Container - Height 252px */}
+                    <div className="flex flex-col gap-1.25 relative overflow-hidden rounded-lg" style={{ height: '252px' }}>
+                      {/* Movie Poster - Full Size */}
+                      <div className="w-full h-full relative rounded-[10px] overflow-hidden">
+                        <Image
+                          src={category.poster}
+                          alt={`${category.name} movies`}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          priority={tabIndex === 0 && categoryIndex < 3}
+                        />
+                      </div>
 
-      {/* Angels row - Dark */}
-      <div className="hidden dark:flex flex-col justify-center items-center">
-        {/* Desktop view */}
-        <div className="hidden md:flex flex-row gap-4 justify-center">
-          {angelLogos.map((logo, index) => (
-            <Image key={index} src={logo.srcDark} alt={logo.alt} />
-          ))}
-        </div>
-        {/* Mobile view - 3 per row */}
-        <div className="md:hidden flex flex-wrap justify-center items-center gap-4 px-4 w-full">
-          {angelLogos.map((logo, index) => (
-            <div
-              key={index}
-              className="w-[calc(33.333%-16px)] flex justify-center"
-            >
-              <Image
-                src={logo.srcDark}
-                alt={logo.alt}
-                className="w-full h-auto object-contain max-20"
-              />
-            </div>
-          ))}
-        </div>
+                      {/* Gradient Overlay Bottom - Exact Figma Specs */}
+                      <div 
+                        className="absolute bottom-0 left-0 right-0 rounded-lg pointer-events-none"
+                        style={{
+                          height: '252px',
+                          width: '237px',
+                          marginLeft: '-1px',
+                          background: 'linear-gradient(180deg, rgba(26, 26, 26, 0) 0%, rgba(26, 26, 26, 1) 100%)'
+                        }}
+                      />
+
+                      {/* Category Badge */}
+                      <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
+                        <span className="text-xs font-medium text-gray-300">
+                          {category.count}
+                        </span>
+                      </div>
+
+                      {/* Tab Indicator on Card */}
+                      <div className="absolute top-4 right-4 px-2 py-1 bg-[#E50000]/80 backdrop-blur-sm rounded-full">
+                        <span className="text-xs font-medium text-white">
+                          {tab.name}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Container - Category Info */}
+                    <div className="flex items-center justify-between mt-0">
+                      <div className="flex flex-col flex-1">
+                        <h3 
+                          className="text-white text-left"
+                          style={{ 
+                            fontFamily: 'Manrope', 
+                            fontWeight: 600, 
+                            fontSize: '18px', 
+                            lineHeight: '1.5em' 
+                          }}
+                        >
+                          {category.name}
+                        </h3>
+                        <p className="text-[#999999] text-sm mt-1">
+                          {category.description}
+                        </p>
+                      </div>
+                      
+                      {/* Icon - Exact Figma Specs */}
+                      <div className="w-[30px] h-[30px] flex items-center justify-center">
+                        <ChevronRight 
+                          className="text-white group-hover:translate-x-1 transition-transform duration-200" 
+                          strokeWidth={2}
+                          style={{ width: '18.75px', height: '16.88px' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))
+            )}
+          </CarouselContent>
+        </Carousel>
       </div>
     </section>
   );

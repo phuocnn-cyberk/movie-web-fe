@@ -9,15 +9,15 @@ import { RWASection } from "@/components/rwa-section/rwa-section";
 import { PartnersSection } from "@/components/partners-section/partners-section";
 import { DefiPartnersSection } from "@/components/partners-section/defi-partners-section";
 import { Footer } from "../components/common/footer";
-import { WhySection } from "@/components/why-section/why-section";
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import { FreeTrial } from "@/components/common/free-trial";
 
 export default function Home() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden dark:bg-helix-black">
+    <div className="w-full min-h-screen overflow-x-hidden dark:bg-[#202020]">
       <Header />
       <FloatingNav />
-      <main className="w-full dark:bg-helix-black">
+      <main className="w-full dark:bg-[#202020]">
         <HeroSection />
         <PartnersSection />
         <MilestonesSection />
@@ -27,7 +27,7 @@ export default function Home() {
         <DefiPartnersSection />
         <FAQSection />
         <SpotlightSection />
-        <WhySection />
+        <FreeTrial />
       </main>
       <Footer />
     </div>
