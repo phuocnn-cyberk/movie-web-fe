@@ -12,18 +12,13 @@ export const FAQSection = () => {
       question: (
         <>
           <span className="text-helix-blue dark:text-white">
-            What is HELIX?
+            What is StreamVibe?
           </span>{" "}
         </>
       ),
       answer: (
         <span className="text-helix-blue dark:text-white text-sm font-normal leading-tight">
-          HELIX combines the best of TradFi and DeFi in a comprehensive and
-          holistic solution. HELIX issues USHD, a dollar-pegged stablecoin,
-          collateralized by Real World Assets (RWAs) such as US Treasury Bills
-          and Money Market Funds, integrating the safety and security of
-          off-chain RWAs with the composability, liquidity, and versatility of
-          DeFi through USHD.
+          StreamVibe is the best streaming experience for watching your favorite movies and shows on demand, anytime, anywhere. With StreamVibe, you can enjoy a wide variety of content, including the latest blockbusters, classic movies, popular TV shows, and more. You can also create your own watchlists, so you can easily find the content you want to watch.
         </span>
       ),
     },
@@ -32,16 +27,13 @@ export const FAQSection = () => {
       question: (
         <>
           <span className="text-helix-blue dark:text-white">
-            Why choose HELIX?
+            How much does StreamVibe cost?
           </span>{" "}
         </>
       ),
       answer: (
         <span className="text-helix-blue dark:text-white text-sm font-normal leading-tight">
-          Unlike other stablecoin issuers, HELIX provides access to the full
-          stablecoin value stack. From the yield provided by the underlying RWAs
-          that collateralize the USHD stablecoin, to risk-adjusted private
-          credit growth opportunities.
+          StreamVibe is free to use. You can sign up for a free account and start watching your favorite movies and shows right away.
         </span>
       ),
     },
@@ -50,20 +42,13 @@ export const FAQSection = () => {
       question: (
         <>
           <span className="text-helix-blue dark:text-white">
-            How is Helix different?
+            What content is available on StreamVibe?
           </span>{" "}
         </>
       ),
       answer: (
         <span className="text-helix-blue dark:text-white text-sm font-normal leading-tight">
-          Begin with an institutional mindset. With over 80 years of combined
-          experience at some of the world’s largest financial institutions,
-          HELIX knows how to develop and deploy institutional-grade products, to
-          combine the versatility and flexibility of DeFi, with the safety and
-          security of TradFi. <br /> Why settle?
-          <br /> Get the best of both worlds. You deserve the
-          institutional-grade safety of TradFi and the composability of a fully
-          integrated DeFi solution.
+          StreamVibe offers a wide variety of content, including the latest blockbusters, classic movies, popular TV shows, and more. You can also create your own watchlists, so you can easily find the content you want to watch.
         </span>
       ),
     },
@@ -71,18 +56,14 @@ export const FAQSection = () => {
       id: "4",
       question: (
         <>
-          <span className="text-helix-blue dark:text-white">What is</span>{" "}
-          <span className="text-accent">USHD</span>?
+          <span className="text-helix-blue dark:text-white">
+            How can I watch StreamVibe?
+          </span>{" "}
         </>
       ),
       answer: (
         <span className="text-helix-blue dark:text-white text-sm font-normal leading-tight">
-          USHD is a dollar-pegged stablecoin, backed 1:1 by Real World Assets
-          (RWAs) such as US Treasury Bills and/or Money Market Funds. USHD will
-          initially be made available on the Ethereum blockchain network, and
-          will be fully accessible within the DeFi ecosystem. USHD will be
-          rolled out in phases to support other blockchains as well, providing a
-          safe and secure dollar-equivalent.
+          StreamVibe is available on all major streaming platforms, including Netflix, Amazon Prime, Hulu, and more. You can also watch StreamVibe on your smart TV, phone, tablet, or computer.
         </span>
       ),
     },
@@ -91,25 +72,14 @@ export const FAQSection = () => {
       question: (
         <>
           <span className="text-helix-blue dark:text-white">
-            How do I receive yield
+            How do I sign up for StreamVibe
           </span>
           ?
         </>
       ),
       answer: (
         <span className="text-helix-blue dark:text-white text-sm font-normal leading-tight">
-          Because HELIX provides full access to the RWA stack, there are NO
-          LOCK-UPS for USHD if all you’re looking for is the base level of yield
-          our RWAs currently deliver. Base yield for USHD tracks US Treasury
-          Bills and Money Market Funds, simply: <br />
-          <br />
-          1. Stake USHD. <br />
-          2. Receive additional USHD as yield that tracks the underlying RWAs.
-          <br />
-          3. Unstake at any time, with no lock-ups, and no early withdrawal
-          penalties. <br />
-          <br />
-          It’s that simple. <br />A spendable yield option in your wallet.
+          To sign up for StreamVibe, simply create an account on our website. Once you have an account, you can start watching your favorite movies and shows right away.
         </span>
       ),
     },
@@ -118,7 +88,7 @@ export const FAQSection = () => {
   return (
     <section
       id="faq"
-      className="w-full bg-white dark:bg-helix-black overflow-hidden"
+      className="w-full bg-white dark:bg-[#0F0F0F] overflow-hidden"
     >
       <table className="w-full table-fixed border-collapse">
         <colgroup>
@@ -129,42 +99,42 @@ export const FAQSection = () => {
         <tbody>
           {/* Row 1: Empty */}
           <tr>
-            <td className="border border-t-0 border-helix-border-light dark:border-helix-blue/60 p-4"></td>
-            <td className="border border-t-0 border-helix-border-light dark:border-helix-blue/60 p-4"></td>
-            <td className="border border-t-0 border-helix-border-light dark:border-helix-blue/60 p-4"></td>
+            <td className="border border-t-0 border-helix-border p-4"></td>
+            <td className="border border-t-0 border-helix-border p-4"></td>
+            <td className="border border-t-0 border-helix-border p-4"></td>
           </tr>
 
           {/* Row 2: Header in middle column */}
           <tr>
-            <td className="border border-helix-border-light dark:border-helix-blue/60 p-4"></td>
-            <td className="border border-helix-border-light dark:border-helix-blue/60 p-4">
-              <div className="absolute w-[1px] h-28 translate-x-[-16px] translate-y-[50px] bg-helix-blue"></div>
+            <td className="border border-helix-border p-4"></td>
+            <td className="border border-helix-border p-4">
+              <div className="absolute w-[1px] h-28 translate-x-[-16px] translate-y-[50px] bg-[#E50000]"></div>
               <FAQHeader
                 badgeText="You ask, we answer"
                 titleText="Frequently Asked Questions"
-                titleText2="Find the answers you need to confidently navigate and succeed with Helix"
+                titleText2="Find the answers you need to confidently navigate and succeed with StreamVibe"
               />
             </td>
-            <td className="border border-helix-border-light dark:border-helix-blue/60 p-4"></td>
+            <td className="border border-helix-border p-4"></td>
           </tr>
 
           {/* Row 3: Image | FAQ | Image */}
           <tr>
-            <td className="border border-helix-border-light dark:border-helix-blue/60 relative">
+            <td className="border border-helix-border relative">
               <div
                 className="absolute inset-0 w-full h-full bg-no-repeat bg-cover"
                 aria-hidden="true"
               />
             </td>
-            <td className="items-start relative flex dark:bg-helix-blue/20 justify-start p-6">
-              <div className="absolute w-[1px] h-28 right-0 translate-y-[5px] bg-helix-blue"></div>
+            <td className="items-start relative flex dark:bg-[#1A1A1A] justify-start p-6">
+              <div className="absolute w-[1px] h-28 right-0 translate-y-[5px] bg-[#E50000]"></div>
               <div className="w-[97%] xl:max-w-[1000px] mx-auto">
                 <Accordion type="multiple" className="w-full px-2 md:px-6">
                   {faqs.map((faq) => (
                     <AccordionItem
                       key={faq.id}
                       value={faq.id}
-                      className={` border-b border-helix-border-light dark:border-helix-blue/60 pb-6 flex flex-col`}
+                      className={` border-b border-helix-border pb-6 flex flex-col`}
                     >
                       <AccordionTrigger className="text-left  pb-4 flex-shrink-0  ">
                         <span className="text-base font-semibold  leading-tight">
@@ -181,7 +151,7 @@ export const FAQSection = () => {
                 </Accordion>
               </div>
             </td>
-            <td className="border border-helix-border-light dark:border-helix-blue/60 relative">
+            <td className="border border-helix-border relative">
               <div
                 className="absolute inset-0 w-full h-full bg-no-repeat bg-cover"
                 aria-hidden="true"
