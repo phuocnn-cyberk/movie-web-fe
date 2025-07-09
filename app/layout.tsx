@@ -15,8 +15,9 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "HELIX - The Stablecoin For a Stable Future",
-  description: "The Composability of DeFi, The Confidence of TradFi.",
+  title: "StreamVibe - The First Decentralized Video Streaming Platform",
+  description:
+    "StreamVibe is the first decentralized video streaming platform that allows you to stream your videos to the world without the need for a central authority.",
 };
 
 export default function RootLayout({

@@ -1,13 +1,9 @@
 import { HeroSection } from "@/components/hero-section/hero-section";
-import { ProductSection } from "../components/products-section/products-section";
-import { MilestonesSection } from "../components/milestones-section/milestones-section";
+import { DevicesSection } from "../components/devices-section/devices-section";
 import { Header } from "../components/common/header";
 import { SpotlightSection } from "@/components/spotlight-section/spotlight-section";
-import { ConfidenceSection } from "@/components/confidence-section/confidence-section";
 import { FAQSection } from "@/components/faq-section/faq-section";
-import { RWASection } from "@/components/rwa-section/rwa-section";
-import { PartnersSection } from "@/components/partners-section/partners-section";
-import { DefiPartnersSection } from "@/components/partners-section/defi-partners-section";
+import { CategoriesSection } from "@/components/categories-section/categories-section";
 import { Footer } from "../components/common/footer";
 import { FreeTrial } from "@/components/common/free-trial";
 
@@ -17,12 +13,8 @@ export default function Home() {
       <Header />
       <main className="w-full dark:bg-[#202020]">
         <HeroSection />
-        <PartnersSection />
-        <MilestonesSection />
-        <ConfidenceSection />
-        <ProductSection />
-        <RWASection />
-        <DefiPartnersSection />
+        <CategoriesSection />
+        <DevicesSection />
         <FAQSection />
         <SpotlightSection />
         <FreeTrial />
