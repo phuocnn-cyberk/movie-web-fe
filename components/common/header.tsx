@@ -4,37 +4,42 @@ import React, { useState } from "react";
 import { Search, Bell, Home, Play, HeadphonesIcon, CreditCard, Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const navItems = [
     {
       name: "Home",
       link: "/",
-      icon: <Home className="h-4 w-4 text-white" />,
-      active: true,
+      icon: <Home className="h-4 w-4" />,
     },
     {
       name: "Movies & Shows",
       link: "/movies-shows",
-      icon: <Play className="h-4 w-4 text-[#BFBFBF]" />,
-      active: false,
+      icon: <Play className="h-4 w-4" />,
     },
     {
       name: "Support",
       link: "/support",
-      icon: <HeadphonesIcon className="h-4 w-4 text-[#BFBFBF]" />,
-      active: false,
+      icon: <HeadphonesIcon className="h-4 w-4" />,
     },
     {
       name: "Subscriptions",
       link: "/subscriptions",
-      icon: <CreditCard className="h-4 w-4 text-[#BFBFBF]" />,
-      active: false,
+      icon: <CreditCard className="h-4 w-4" />,
     },
   ];
+
+  const isActiveRoute = (route: string) => {
+    if (route === "/") {
+      return pathname === "/";
+    }
+    return pathname.startsWith(route);
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -50,7 +55,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center bg-[#0F0F0F] border-4 border-[#1F1F1F] rounded-xl pl-[10px] pr-[40px] py-[10px] gap-[30px]">
           {navItems.map((item, index) => (
             <div key={index} className="relative">
-              {item.active ? (
+              {isActiveRoute(item.link) ? (
                 <div className="bg-[#1A1A1A] border border-[#1A1A1A] rounded-lg px-6 py-[14px] whitespace-nowrap">
                   <span className="text-white text-[18px] font-medium font-manrope">
                     {item.name}
@@ -86,7 +91,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center bg-[#0F0F0F] border-2 border-[#1F1F1F] rounded-xl px-4 py-2 gap-4">
           {navItems.map((item, index) => (
             <div key={index} className="relative">
-              {item.active ? (
+              {isActiveRoute(item.link) ? (
                 <div className="bg-[#1A1A1A] border border-[#1A1A1A] rounded-lg px-4 py-2">
                   <span className="text-white text-sm font-medium font-manrope whitespace-nowrap">
                     {item.name}
@@ -142,9 +147,11 @@ export const Header: React.FC = () => {
                 className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-[#1F1F1F]"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {item.icon}
+                <div className={`${isActiveRoute(item.link) ? 'text-white' : 'text-[#BFBFBF]'}`}>
+                  {item.icon}
+                </div>
                 <span className={`text-lg font-medium font-manrope ${
-                  item.active ? 'text-white' : 'text-[#BFBFBF]'
+                  isActiveRoute(item.link) ? 'text-white' : 'text-[#BFBFBF]'
                 }`}>
                   {item.name}
                 </span>

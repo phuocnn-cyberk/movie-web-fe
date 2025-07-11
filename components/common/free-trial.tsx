@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 
 export const FreeTrial = () => {
   return (
-    <section className="w-full p-20 pt-0 dark:bg-[#0F0F0F]">
+    <section className="w-full py-20 pt-0 dark:bg-[#0F0F0F]">
       <div className="relative px-4 mx-20 rounded-lg border border-gray-500 overflow-hidden">
       {/* Background with image and gradient overlay */}
       <div className="absolute inset-0">
