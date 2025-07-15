@@ -1,10 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Bookmark, ChevronLeft, ChevronRight, Heart, Play, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Play, Bookmark, Heart, Share2, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const MovieHeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -13,64 +13,62 @@ export const MovieHeroSection = () => {
     {
       id: 1,
       title: "Avengers : Endgame",
-      description: "With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos's actions and undo the chaos to the universe, no matter what consequences may be in store, and no matter who they face... Avenge the fallen.",
-      image: "/images/avengers-bg.png"
+      description:
+        "With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos's actions and undo the chaos to the universe, no matter what consequences may be in store, and no matter who they face... Avenge the fallen.",
+      image: "/images/avengers-bg.png",
     },
     {
       id: 2,
       title: "Avengers : Infinity War",
-      description: "The Avengers and their allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos before his blitz of devastation and ruin puts an end to the universe.",
-      image: "/images/avengers-bg.png"
+      description:
+        "The Avengers and their allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos before his blitz of devastation and ruin puts an end to the universe.",
+      image: "/images/avengers-bg.png",
     },
     {
       id: 3,
       title: "Avengers : Age of Ultron",
-      description: "When Tony Stark and Bruce Banner try to jump-start a dormant peacekeeping program called Ultron, things go horribly wrong and it's up to Earth's mightiest heroes to stop the villainous Ultron from enacting his terrible plan.",
-      image: "/images/avengers-bg.png"
+      description:
+        "When Tony Stark and Bruce Banner try to jump-start a dormant peacekeeping program called Ultron, things go horribly wrong and it's up to Earth's mightiest heroes to stop the villainous Ultron from enacting his terrible plan.",
+      image: "/images/avengers-bg.png",
     },
     {
       id: 4,
       title: "The Avengers",
-      description: "Earth's mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.",
-      image: "/images/avengers-bg.png"
-    }
+      description:
+        "Earth's mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.",
+      image: "/images/avengers-bg.png",
+    },
   ];
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
+  }, [slides.length]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  }, [slides.length]);
 
-  const goToSlide = (index: number) => {
+  const goToSlide = useCallback((index: number) => {
     setCurrentSlide(index);
-  };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [nextSlide]);
 
   return (
-    <section className="relative w-full h-[835px] ">
+    <section className="relative h-[835px] w-full">
       <div className="absolute inset-0">
-        <div className="relative w-full h-full">
+        <div className="relative h-full w-full">
           {slides.map((slide, index) => (
             <div
               key={slide.id}
               className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentSlide ? 'opacity-100' : 'opacity-0'
+                index === currentSlide ? "opacity-100" : "opacity-0"
               }`}
             >
-              <Image 
-                src={slide.image} 
-                alt={slide.title} 
-                fill 
-                className="object-cover" 
-                priority={index === 0}
-              />
+              <Image src={slide.image} alt={slide.title} fill className="object-cover" priority={index === 0} />
             </div>
           ))}
         </div>
@@ -78,84 +76,80 @@ export const MovieHeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#141414]"></div>
       </div>
 
-      <div className="relative z-10 h-full flex flex-col justify-end items-center gap-[50px] px-[50px] py-[50px] pb-[20px]">
-        <div className="flex flex-col justify-end items-center self-stretch gap-[30px]">
-          <div className="flex flex-col items-center self-stretch gap-1 px-[150px]">
-            <h1 className="text-[38px] font-bold text-white leading-[1.5em] text-center font-[Manrope] w-full">
+      <div className="relative z-10 flex h-full flex-col items-center justify-end gap-[50px] px-[50px] py-[50px] pb-[20px]">
+        <div className="flex flex-col items-center justify-end gap-[30px] self-stretch">
+          <div className="flex flex-col items-center gap-1 self-stretch px-[150px]">
+            <h1 className="w-full text-center font-[Manrope] text-[38px] leading-[1.5em] font-bold text-white">
               {slides[currentSlide].title}
             </h1>
-            <p className="text-[18px] text-[#999999] leading-[1.5em] text-center font-[Manrope] font-medium w-full">
+            <p className="w-full text-center font-[Manrope] text-[18px] leading-[1.5em] font-medium text-[#999999]">
               {slides[currentSlide].description}
             </p>
           </div>
 
           <div className="flex items-center gap-5">
             <Link href={`/movie/${slides[currentSlide].id}`}>
-              <Button 
-                className="bg-[#E50000] hover:bg-[#CC0000] text-white font-semibold px-6 py-[14px] text-[18px] rounded-lg transition-all duration-300 font-[Manrope] flex items-center gap-1"
-              >
-                <div className="w-7 h-7 flex items-center justify-center">
-                  <Play className="w-[17.84px] h-[19.19px] fill-white" />
+              <Button className="flex items-center gap-1 rounded-lg bg-[#E50000] px-6 py-[14px] font-[Manrope] text-[18px] font-semibold text-white transition-all duration-300 hover:bg-[#CC0000]">
+                <div className="flex h-7 w-7 items-center justify-center">
+                  <Play className="h-[19.19px] w-[17.84px] fill-white" />
                 </div>
                 Play Now
               </Button>
             </Link>
 
             <div className="flex items-center gap-[10px]">
-              <Button 
+              <Button
                 variant="outline"
-                className="bg-[#0F0F0F] border-[#262626] hover:border-[#404040] p-[14px] rounded-lg"
+                className="rounded-lg border-[#262626] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
               >
-                <Bookmark className="w-[14px] h-[14px] text-white" />
+                <Bookmark className="h-[14px] w-[14px] text-white" />
               </Button>
-              <Button 
+              <Button
                 variant="outline"
-                className="bg-[#0F0F0F] border-[#262626] hover:border-[#404040] p-[14px] rounded-lg"
+                className="rounded-lg border-[#262626] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
               >
-                <Heart className="w-[22.75px] h-[21px] text-white" />
+                <Heart className="h-[21px] w-[22.75px] text-white" />
               </Button>
-              <Button 
+              <Button
                 variant="outline"
-                className="bg-[#0F0F0F] border-[#262626] hover:border-[#404040] p-[14px] rounded-lg"
+                className="rounded-lg border-[#262626] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
               >
-                <Share2 className="w-[22.75px] h-[20.28px] text-white" />
+                <Share2 className="h-[20.28px] w-[22.75px] text-white" />
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between self-stretch gap-4">
-          <Button 
+        <div className="flex items-center justify-between gap-4 self-stretch">
+          <Button
             variant="outline"
             onClick={prevSlide}
-            className="bg-[#0F0F0F] border-[#1F1F1F] hover:border-[#404040] p-[14px] rounded-lg"
+            className="rounded-lg border-[#1F1F1F] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
           >
-            <ChevronLeft className="w-[17.5px] h-[15.75px] text-white" />
+            <ChevronLeft className="h-[15.75px] w-[17.5px] text-white" />
           </Button>
 
-          <div className="flex items-center gap-[3px] w-[81px]">
+          <div className="flex w-[81px] items-center gap-[3px]">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`h-1 rounded-full transition-all duration-300 ${
-                  index === currentSlide 
-                    ? 'w-[23px] bg-[#E50000]' 
-                    : 'flex-1 bg-[#333333]'
+                  index === currentSlide ? "w-[23px] bg-[#E50000]" : "flex-1 bg-[#333333]"
                 }`}
               />
             ))}
           </div>
 
-          <Button 
+          <Button
             variant="outline"
             onClick={nextSlide}
-            className="bg-[#0F0F0F] border-[#1F1F1F] hover:border-[#404040] p-[14px] rounded-lg"
+            className="rounded-lg border-[#1F1F1F] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
           >
-            <ChevronRight className="w-[21px] h-[17.5px] text-white" />
+            <ChevronRight className="h-[17.5px] w-[21px] text-white" />
           </Button>
         </div>
       </div>
     </section>
   );
-}; 
+};

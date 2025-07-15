@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { Syne, Montserrat } from "next/font/google";
+import { Montserrat, Syne } from "next/font/google";
+import { Toaster } from "sonner";
+
+import { QueryProvider } from "@/providers/query-client-provider";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -26,11 +29,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${montserrat.className} ${syne.className} dark`}
-    >
-      <body className={`antialiased`}>{children}</body>
+    <html lang="en" className={`${montserrat.className} ${syne.className} dark`}>
+      <body className={`antialiased`}>
+        <QueryProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </QueryProvider>
+      </body>
     </html>
   );
 }

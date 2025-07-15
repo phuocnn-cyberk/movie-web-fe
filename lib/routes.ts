@@ -1,4 +1,4 @@
-export const routes = {
+export const ROUTES = {
   // Main routes
   home: "/",
   moviesShows: "/movies-shows",
@@ -10,6 +10,6 @@ export const routes = {
   settings: "/settings",
   
   // Auth routes
-  login: "/login",
-  register: "/register",
-} as const; 
+  signIn: "/sign-in",
+  signUp: "/sign-up",
+} as const;
