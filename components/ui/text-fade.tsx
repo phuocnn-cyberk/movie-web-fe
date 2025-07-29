@@ -1,5 +1,6 @@
 "use client";
-import { motion, useInView } from "motion/react";
+
+import { motion, useInView, Variants } from "framer-motion";
 import * as React from "react";
 
 export function TextFade({
@@ -13,17 +14,19 @@ export function TextFade({
   className?: string;
   staggerChildren?: number;
 }) {
-  const FADE_DOWN = {
+  const FADE_DOWN: Variants = {
     show: { opacity: 1, y: 0, transition: { type: "spring" } },
     hidden: { opacity: 0, y: direction === "down" ? -18 : 18 },
   };
+
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true });
+
   return (
     <motion.div
       ref={ref}
       initial="hidden"
-      animate={isInView ? "show" : ""}
+      animate={isInView ? "show" : undefined}
       variants={{
         hidden: {},
         show: {

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "../ui/button";
+import { sendSupport } from "@/services/api";
 
 export const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,28 +11,57 @@ export const ContactForm: React.FC = () => {
     email: "",
     phone: "",
     message: "",
-    agree: false
+    agree: false,
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value
+      [name]:
+        type === "checkbox"
+          ? (e.target as HTMLInputElement).checked
+          : value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission here
+
+    try {
+      await sendSupport({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phoneNumber: formData.phone,
+        message: formData.message,
+      });
+
+      alert("Message sent successfully!");
+
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        message: "",
+        agree: false,
+      });
+    } catch (error) {
+      console.error("Error sending support:", error);
+      alert("Failed to send message. Please try again later.");
+    }
   };
 
   return (
     <div className="flex-1">
-      <form onSubmit={handleSubmit} className="bg-[#0F0F0F] border border-[#262626] rounded-xl p-[50px] flex flex-col gap-[50px]">
-        
-        {/* First Row - First Name & Last Name */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#0F0F0F] border border-[#262626] rounded-xl p-[50px] flex flex-col gap-[50px]"
+      >
+        {/* First Row */}
         <div className="flex gap-[50px] w-full">
           <div className="flex-1 flex flex-col gap-4">
             <label className="text-white font-semibold text-[18px] font-[Manrope]">
@@ -63,7 +93,7 @@ export const ContactForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Second Row - Email & Phone */}
+        {/* Second Row */}
         <div className="flex gap-[50px] w-full">
           <div className="flex-1 flex flex-col gap-4">
             <label className="text-white font-semibold text-[18px] font-[Manrope]">
@@ -94,7 +124,7 @@ export const ContactForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Message Field */}
+        {/* Message */}
         <div className="flex flex-col gap-4 w-full">
           <label className="text-white font-semibold text-[18px] font-[Manrope]">
             Message
@@ -110,7 +140,7 @@ export const ContactForm: React.FC = () => {
           />
         </div>
 
-        {/* Checkbox and Submit Button */}
+        {/* Agree + Submit */}
         <div className="flex items-center justify-between gap-[70px] w-full">
           <div className="flex items-center gap-3 flex-1">
             <input
@@ -122,20 +152,22 @@ export const ContactForm: React.FC = () => {
               className="w-5 h-5 bg-[#141414] border-2 border-[#262626] rounded text-[#E50000] focus:ring-[#E50000] focus:ring-2"
               required
             />
-            <label htmlFor="agree" className="text-[#999999] text-[14px] font-[Manrope] leading-relaxed">
+            <label
+              htmlFor="agree"
+              className="text-[#999999] text-[14px] font-[Manrope] leading-relaxed"
+            >
               I agree with Terms of Use and Privacy Policy
             </label>
           </div>
-          
-          <Button 
+
+          <Button
             type="submit"
             className="bg-[#E50000] hover:bg-[#CC0000] text-white font-semibold px-6 py-[18px] text-[16px] rounded-lg transition-all duration-300 font-[Manrope]"
           >
             Send Message
           </Button>
         </div>
-
       </form>
     </div>
   );
-}; 
+};

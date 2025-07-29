@@ -41,7 +41,7 @@ export const SupportHero: React.FC = () => {
               </div>
               <div className="flex flex-col">
                 <span className="text-white font-semibold text-[16px] font-[Manrope]">Email</span>
-                <span className="text-[#999999] text-[14px] font-[Manrope]">support@streamvibe.com</span>
+                <span className="text-[#999999] text-[14px] font-[Manrope]">thandongdatviet357@gmail.com</span>
               </div>
             </div>
 

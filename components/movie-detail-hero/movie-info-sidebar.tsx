@@ -21,11 +21,11 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
       value: movie.year.toString(),
       icon: <Calendar className="w-4 h-4" />
     },
-    {
-      label: "Available Languages",
-      value: ["English", "Hindi", "Telugu"],
-      icon: <Globe className="w-4 h-4" />
-    },
+    // {
+    //   label: "Available Languages",
+    //   value: ["English", "Hindi", "Telugu"],
+    //   icon: <Globe className="w-4 h-4" />
+    // },
     {
       label: "Ratings",
       value: `${movie.rating}/10`,

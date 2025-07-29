@@ -5,76 +5,50 @@ import { Check, X } from "lucide-react";
 
 interface ComparisonFeature {
   name: string;
-  basic: boolean | string;
-  standard: boolean | string;
+  free: boolean | string;
   premium: boolean | string;
 }
 
 const comparisonFeatures: ComparisonFeature[] = [
   {
     name: "Price",
-    basic: "$9.99/Month",
-    standard: "$12.99/Month", 
-    premium: "$14.99/Month"
+    free: "Free",
+    premium: "7.99$ / 30 days"
   },
   {
-    name: "Content",
-    basic: "Access to a vast library of movies and shows, including recently released titles.",
-    standard: "Access to same library as Basic, plus exclusive content and early access to new releases.",
-    premium: "Access to same library as Standard, plus offline viewing and exclusive Premium content."
-  },
-  {
-    name: "Devices",
-    basic: "Watch on one device simultaneously",
-    standard: "Watch on Two device simultaneously",
-    premium: "Watch on Four device simultaneously"
-  },
-  {
-    name: "Free Trial",
-    basic: "7 Days",
-    standard: "7 Days",
-    premium: "7 Days"
-  },
-  {
-    name: "Cancel Anytime",
-    basic: true,
-    standard: true,
+    name: "Watch public movies",
+    free: true,
     premium: true
   },
   {
-    name: "HDR",
-    basic: false,
-    standard: true,
+    name: "Watch Premium movies",
+    free: false,
     premium: true
   },
   {
-    name: "Dolby Atmos",
-    basic: false,
-    standard: true,
+    name: "No Ads",
+    free: false,
     premium: true
   },
   {
-    name: "Ad - Free",
-    basic: true,
-    standard: true,
+    name: "HD Quality",
+    free: false,
     premium: true
   },
   {
-    name: "Offline Viewing",
-    basic: false,
-    standard: false,
+    name: "Watch on multiple devices",
+    free: false,
     premium: true
   },
   {
-    name: "Family Sharing",
-    basic: false,
-    standard: true,
-    premium: true
+    name: "Download for offline viewing",
+    free: false,
+    premium: false // not supported yet
   }
 ];
 
 export const PlanComparison: React.FC = () => {
-  const renderFeatureCell = (value: boolean | string, isPricing = false) => {
+  const renderFeatureCell = (value: boolean | string) => {
     if (typeof value === "boolean") {
       return value ? (
         <Check className="w-6 h-6 text-white mx-auto" />
@@ -82,9 +56,9 @@ export const PlanComparison: React.FC = () => {
         <X className="w-6 h-6 text-[#999999] mx-auto" />
       );
     }
-    
+
     return (
-      <span className={`text-center block ${isPricing ? 'text-white font-semibold text-[18px]' : 'text-[#999999] text-[14px]'} font-[Manrope] leading-relaxed max-w-full`}>
+      <span className="text-center block text-white font-[Manrope] text-[14px]">
         {value}
       </span>
     );
@@ -92,66 +66,30 @@ export const PlanComparison: React.FC = () => {
 
   return (
     <section className="w-full py-20">
-      {/* Header */}
       <div className="mb-20">
-        <div className="flex flex-col gap-[14px] pr-[300px]">
-          <h2 className="text-[48px] font-bold text-white leading-[1.5em] font-[Manrope]">
-            Compare our plans and find the right one for you
-          </h2>
-          <p className="text-[18px] font-normal text-[#999999] leading-[1.5em] font-[Manrope]">
-            StreamVibe offers three different plans to fit your needs: Basic, Standard, and Premium. Compare the features of each plan and choose the one that&apos;s right for you.
-          </p>
-        </div>
+        <h2 className="text-[48px] font-bold text-white font-[Manrope] mb-4">
+          Compare Subscription Plans
+        </h2>
+        <p className="text-[18px] text-[#999999] font-[Manrope]">
+          Below is a comparison between the Free and Premium plans.
+        </p>
       </div>
 
-      {/* Comparison Table */}
-      <div className="border border-[#262626] rounded-xl overflow-hidden overflow-x-auto">
-        {/* Table Header */}
-        <div className="bg-[#0F0F0F] border-b border-[#262626] grid grid-cols-4 min-w-[800px]">
-          <div className="p-[30px] flex items-center justify-center min-w-[200px]">
-            <span className="text-white font-semibold text-[18px] font-[Manrope]">Features</span>
-          </div>
-          <div className="p-[30px] border-l border-[#262626] flex items-center justify-center min-w-[200px]">
-            <span className="text-white font-semibold text-[18px] font-[Manrope]">Basic</span>
-          </div>
-          <div className="p-[30px] border-l border-[#262626] flex items-center justify-center min-w-[200px]">
-            <span className="text-white font-semibold text-[18px] font-[Manrope]">Standard</span>
-          </div>
-          <div className="p-[30px] border-l border-[#262626] flex items-center justify-center min-w-[200px]">
-            <span className="text-white font-semibold text-[18px] font-[Manrope]">Premium</span>
-          </div>
+      <div className="border border-[#262626] rounded-xl overflow-x-auto min-w-[600px]">
+        <div className="grid grid-cols-3 bg-[#0F0F0F] border-b border-[#262626]">
+          <div className="p-6 text-white font-semibold text-[18px] text-center">Feature</div>
+          <div className="p-6 text-white font-semibold text-[18px] text-center border-l border-[#262626]">Free</div>
+          <div className="p-6 text-white font-semibold text-[18px] text-center border-l border-[#262626]">Premium</div>
         </div>
 
-        {/* Table Rows */}
-        {comparisonFeatures.map((feature, index) => (
-          <div 
-            key={index} 
-            className={`grid grid-cols-4 min-w-[800px] ${index !== comparisonFeatures.length - 1 ? 'border-b border-[#262626]' : ''}`}
-          >
-            {/* Feature Name */}
-            <div className="p-[30px] flex items-center min-w-[200px]">
-              <span className="text-white font-medium text-[16px] font-[Manrope]">
-                {feature.name}
-              </span>
-            </div>
-
-            {/* Basic Plan */}
-            <div className="p-[30px] border-l border-[#262626] flex items-center justify-center min-w-[200px]">
-              {renderFeatureCell(feature.basic, feature.name === "Price")}
-            </div>
-
-            {/* Standard Plan */}
-            <div className="p-[30px] border-l border-[#262626] flex items-center justify-center min-w-[200px]">
-              {renderFeatureCell(feature.standard, feature.name === "Price")}
-            </div>
-
-            {/* Premium Plan */}
-            <div className="p-[30px] border-l border-[#262626] flex items-center justify-center min-w-[200px]">
-              {renderFeatureCell(feature.premium, feature.name === "Price")}
-            </div>
+        {comparisonFeatures.map((feature, i) => (
+          <div key={i} className="grid grid-cols-3 border-b border-[#262626]">
+            <div className="p-6 text-white text-[16px] font-[Manrope]">{feature.name}</div>
+            <div className="p-6 border-l border-[#262626]">{renderFeatureCell(feature.free)}</div>
+            <div className="p-6 border-l border-[#262626]">{renderFeatureCell(feature.premium)}</div>
           </div>
         ))}
       </div>
     </section>
   );
-}; 
+};

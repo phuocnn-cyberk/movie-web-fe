@@ -15,45 +15,31 @@ interface SubscriptionPlan {
 
 const subscriptionPlans: SubscriptionPlan[] = [
   {
-    id: "basic",
-    name: "Basic Plan",
-    description: "Enjoy an extensive library of movies and shows, featuring a range of content, including recently released titles.",
-    price: 9.99,
-    period: "month",
+    id: "FREE",
+    name: "FREE PLAN",
+    description: "Free plan only watches public movies.",
+    price: 0,
+    period: "",
     features: [
-      "Access to a vast library of movies and TV shows",
-      "Ad-free streaming experience",
-      "Watch on one device at a time",
-      "Standard video quality"
+      "Watch free movies",
+      "Only available on 1 device",
+      "No download feature",
+      "SD quality"
     ]
   },
   {
-    id: "standard",
-    name: "Standard Plan", 
-    description: "Access to a wider selection of movies and shows, including most new releases and exclusive content.",
-    price: 12.99,
-    period: "month",
+    id: "PREMIUM",
+    name: "PREMIUM PLAN",
+    description: "VIP package 1 month unlimited movie viewing.",
+    price: 7.99,
+    period: "30 days",
     features: [
-      "Access to a vast library of movies and TV shows",
-      "Ad-free streaming experience", 
-      "Watch on two devices simultaneously",
-      "High-definition (HD) video quality"
+      "Watch all movies, including Premium",
+      "Watch on multiple devices",
+      "HD/FullHD quality",
+      "No ads"
     ],
     isPopular: true
-  },
-  {
-    id: "premium",
-    name: "Premium Plan",
-    description: "Access to a widest selection of movies and shows, including all new releases and Offline Viewing.",
-    price: 14.99,
-    period: "month",
-    features: [
-      "Access to a vast library of movies and TV shows",
-      "Ad-free streaming experience",
-      "Watch on multiple devices simultaneously", 
-      "Ultra-high-definition (4K) video quality",
-      "Offline viewing on mobile devices"
-    ]
   }
 ];
 
@@ -66,7 +52,6 @@ export const SubscriptionCards: React.FC = () => {
             key={plan.id}
             className="flex-1 bg-[#1A1A1A] border border-[#262626] rounded-xl p-[50px] flex flex-col gap-[50px] relative"
           >
-            {/* Text Container */}
             <div className="flex flex-col gap-4">
               <h3 className="text-[24px] font-bold text-white font-[Manrope]">
                 {plan.name}
@@ -76,17 +61,17 @@ export const SubscriptionCards: React.FC = () => {
               </p>
             </div>
 
-            {/* Price Container */}
             <div className="flex justify-center items-end gap-1">
               <span className="text-[48px] font-bold text-white font-[Manrope]">
-                ${plan.price}
+                {plan.price === 0 ? "Free" : `${plan.price.toLocaleString()}₫`}
               </span>
-              <span className="text-[20px] text-[#999999] font-[Manrope] mb-2">
-                /{plan.period}
-              </span>
+              {plan.period && (
+                <span className="text-[20px] text-[#999999] font-[Manrope] mb-2">
+                  / {plan.period}
+                </span>
+              )}
             </div>
 
-            {/* Features List */}
             <div className="flex flex-col gap-3">
               {plan.features.map((feature, index) => (
                 <div key={index} className="flex items-start gap-3">
@@ -98,26 +83,22 @@ export const SubscriptionCards: React.FC = () => {
               ))}
             </div>
 
-            {/* Buttons Container */}
             <div className="flex gap-5 w-full">
-              <Button 
-                variant="outline"
-                className="flex-1 bg-transparent border-[#262626] text-white hover:border-[#3A3A3A] hover:bg-[#262626] py-4 text-[16px] font-semibold font-[Manrope]"
-              >
-                Start Free Trial
-              </Button>
-              <Button 
-                className={`flex-1 py-4 text-[16px] font-semibold font-[Manrope] ${
-                  plan.isPopular 
-                    ? "bg-[#E50000] hover:bg-[#CC0000] text-white" 
-                    : "bg-[#262626] hover:bg-[#3A3A3A] text-white"
-                }`}
-              >
-                Choose Plan
-              </Button>
+              {plan.id === "free" ? (
+                <Button 
+                  className="flex-1 py-4 text-[16px] font-semibold font-[Manrope] bg-[#262626] hover:bg-[#3A3A3A] text-white"
+                >
+                  Use Now
+                </Button>
+              ) : (
+                <Button 
+                  className="flex-1 py-4 text-[16px] font-semibold font-[Manrope] bg-[#E50000] hover:bg-[#CC0000] text-white"
+                >
+                  Subscribe
+                </Button>
+              )}
             </div>
 
-            {/* Popular Badge */}
             {plan.isPopular && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <div className="bg-[#E50000] text-white px-4 py-2 rounded-lg text-[14px] font-semibold font-[Manrope]">
@@ -130,4 +111,4 @@ export const SubscriptionCards: React.FC = () => {
       </div>
     </section>
   );
-}; 
+};
