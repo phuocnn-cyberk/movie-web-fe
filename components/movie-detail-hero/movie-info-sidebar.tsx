@@ -1,7 +1,7 @@
 "use client";
 
+import { Calendar, Film, Star } from "lucide-react";
 import React from "react";
-import { Calendar, Globe, Star, Film } from "lucide-react";
 
 interface MovieData {
   year: number;
@@ -19,7 +19,7 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
     {
       label: "Released Year",
       value: movie.year.toString(),
-      icon: <Calendar className="w-4 h-4" />
+      icon: <Calendar className="h-4 w-4" />,
     },
     // {
     //   label: "Available Languages",
@@ -29,57 +29,53 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
     {
       label: "Ratings",
       value: `${movie.rating}/10`,
-      icon: <Star className="w-4 h-4" />
+      icon: <Star className="h-4 w-4" />,
     },
     {
       label: "Genres",
       value: [movie.genre, "Adventure", "Drama"],
-      icon: <Film className="w-4 h-4" />
-    }
+      icon: <Film className="h-4 w-4" />,
+    },
   ];
 
   const crewInfo = [
     {
       label: "Director",
       name: "Rishab Shetty",
-      avatar: "/images/avatars/director.png"
+      avatar: "/images/avatars/director.png",
     },
     {
       label: "Music",
       name: "B. Ajaneesh Loknath",
-      avatar: "/images/avatars/music.png"
-    }
+      avatar: "/images/avatars/music.png",
+    },
   ];
 
   return (
     <div className="w-[519px] flex-shrink-0">
-      <div className="bg-[#1A1A1A] border border-[#262626] rounded-xl p-[50px]">
+      <div className="rounded-xl border border-[#262626] bg-[#1A1A1A] p-[50px]">
         {/* Movie Info Items */}
-        <div className="space-y-[30px] mb-[30px]">
+        <div className="mb-[30px] space-y-[30px]">
           {movieInfo.map((item, index) => (
             <div key={index} className="flex flex-col gap-[14px]">
               <div className="flex items-center gap-1 text-[#999999]">
                 {item.icon}
-                <span className="text-[18px] font-medium font-[Manrope]">
-                  {item.label}
-                </span>
+                <span className="font-[Manrope] text-[18px] font-medium">{item.label}</span>
               </div>
-              
+
               {Array.isArray(item.value) ? (
                 <div className="flex flex-wrap gap-[10px]">
                   {item.value.map((tag, tagIndex) => (
-                    <span 
+                    <span
                       key={tagIndex}
-                      className="bg-[#141414] border border-[#262626] px-[14px] py-[14px] rounded-lg text-white text-[20px] font-semibold font-[Manrope]"
+                      className="rounded-lg border border-[#262626] bg-[#141414] px-[14px] py-[14px] font-[Manrope] text-[20px] font-semibold text-white"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               ) : (
-                <span className="text-white text-[20px] font-semibold font-[Manrope]">
-                  {item.value}
-                </span>
+                <span className="font-[Manrope] text-[20px] font-semibold text-white">{item.value}</span>
               )}
             </div>
           ))}
@@ -89,18 +85,17 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
         <div className="space-y-[30px]">
           {crewInfo.map((crew, index) => (
             <div key={index} className="flex flex-col gap-[14px]">
-              <h3 className="text-[18px] font-medium text-[#999999] font-[Manrope]">
-                {crew.label}
-              </h3>
-              <div className="bg-[#141414] border border-[#262626] rounded-lg p-[14px] flex items-center gap-[10px]">
-                <div className="w-10 h-10 rounded-full bg-[#262626] flex items-center justify-center">
-                  <span className="text-white font-semibold text-[14px] font-[Manrope]">
-                    {crew.name.split(' ').map(n => n[0]).join('')}
+              <h3 className="font-[Manrope] text-[18px] font-medium text-[#999999]">{crew.label}</h3>
+              <div className="flex items-center gap-[10px] rounded-lg border border-[#262626] bg-[#141414] p-[14px]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#262626]">
+                  <span className="font-[Manrope] text-[14px] font-semibold text-white">
+                    {crew.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </span>
                 </div>
-                <span className="text-white text-[16px] font-medium font-[Manrope]">
-                  {crew.name}
-                </span>
+                <span className="font-[Manrope] text-[16px] font-medium text-white">{crew.name}</span>
               </div>
             </div>
           ))}
@@ -108,4 +103,4 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
       </div>
     </div>
   );
-}; 
+};

@@ -1,8 +1,23 @@
+import { useAuthStore } from "@/stores/auth.store";
 import axios from "axios";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
 });
+
+// Add request interceptor to automatically add auth token
+api.interceptors.request.use(
+  (config) => {
+    const authState = useAuthStore.getState();
+    if (authState.accessToken) {
+      config.headers.Authorization = `Bearer ${authState.accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const signIn = async (email: string, password: string) => {
   const response = await api.post("/api/auth/login", { email, password });
@@ -21,16 +36,20 @@ export const sendSupport = async (data: {
   phoneNumber: string;
   message: string;
 }) => {
-  // Giả sử userId được lưu trong localStorage
-  const userId = localStorage.getItem("userId");
+  const authState = useAuthStore.getState();
+  const userId = authState.user?.userID;
 
   const response = await api.post("/api/supports/send", {
     ...data,
-    userId: userId ? parseInt(userId) : null,
+    userId: userId ? userId.toString() : null,
   });
 
   return response.data;
 };
 
+export const getCurrentUser = async () => {
+  const response = await api.get("/api/auth/me");
+  return response.data;
+};
 
 export { api };

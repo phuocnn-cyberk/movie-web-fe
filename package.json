@@ -24,6 +24,7 @@
     "dotenv": "^17.0.0",
     "embla-carousel-react": "^8.6.0",
     "figma-api": "2.0.2-beta",
+    "framer-motion": "^12.23.12",
     "lucide-react": "^0.511.0",
     "motion": "^12.16.0",
     "next": "15.3.3",
