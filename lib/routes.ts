@@ -5,11 +5,12 @@ export const ROUTES = {
   subscriptions: "/subscriptions",
   support: "/support",
 
-  // User routes
-  profile: "/profile",
-  settings: "/settings",
-  
-  // Auth routes
+  // User account
+  account: "/account",
+  favorites: "/favorites",
+  watchHistory: "/watch-history",
+
+  // Auth
   signIn: "/sign-in",
   signUp: "/sign-up",
 } as const;

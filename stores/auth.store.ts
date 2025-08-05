@@ -26,13 +26,23 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       actions: {
         setTokens: ({ accessToken, refreshToken }) => {
-          set({ accessToken, refreshToken: refreshToken ?? get().refreshToken, isAuthenticated: !!accessToken });
+          set({
+            accessToken,
+            refreshToken: refreshToken ?? get().refreshToken,
+            isAuthenticated: !!accessToken,
+          });
         },
         setUser: (user) => {
           set({ user });
         },
         clearAuth: () => {
-          set({ accessToken: null, refreshToken: null, user: null, isAuthenticated: false, isLoading: false });
+          set({
+            accessToken: null,
+            refreshToken: null,
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
         },
         setLoading: (loading) => {
           set({ isLoading: loading });
@@ -40,10 +50,9 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage", // Name of the item in localStorage
-      storage: createJSONStorage(() => localStorage), // Use localStorage
+      name: "auth-storage",
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        // Only persist tokens and user, not loading state or actions
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         user: state.user,
@@ -53,5 +62,4 @@ export const useAuthStore = create<AuthState>()(
   )
 );
 
-// Export actions separately for easier usage in components/hooks
 export const useAuthActions = () => useAuthStore((state) => state.actions);

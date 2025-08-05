@@ -1,11 +1,24 @@
 export interface User {
   userID?: number;
-  id?: string | number;
-  name?: string | null;
-  email?: string | null;
-  role?: string | null;
-  avatar?: string | null;
-  phone?: string | null;
-  password?: string | null;
-  resetToken?: string | null;
+  id?: number;
+  name?: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  role?: string;
+}
+
+export interface Payment {
+  paymentId: number;
+  planId: number;
+  amount: number;
+  paymentStatus: string;
+  paidAt: string;
+}
+
+export interface Support {
+  supportID: number;
+  message: string;
+  createdAt: string;
+  response?: string;
 }
