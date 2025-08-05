@@ -19,7 +19,7 @@ export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const { isAuthenticated, user, actions } = useAuthStore();
+  const { isAuthenticated, actions } = useAuthStore();
 
   const handleSignOut = () => {
     actions.clearAuth();
@@ -98,7 +98,7 @@ export const Header: React.FC = () => {
               <button className="flex h-[34px] w-[34px] items-center justify-center" aria-label="Profile">
                 {isAuthenticated ? (
                   <Image
-                    src={user?.avatar || "/logos/default-avatar.svg"}
+                    src="/logos/default-avatar.svg"
                     alt="Profile"
                     className="h-6 w-6 rounded-full"
                     width={24}
@@ -165,7 +165,7 @@ export const Header: React.FC = () => {
               <button className="flex h-8 w-8 items-center justify-center" aria-label="Profile">
                 {isAuthenticated ? (
                   <Image
-                    src={user?.avatar || "/logos/default-avatar.svg"}
+                    src="/logos/default-avatar.svg"
                     alt="Profile"
                     className="h-6 w-6 rounded-full"
                     width={24}
