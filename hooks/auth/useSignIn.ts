@@ -1,13 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { signIn, getProfile } from "@/services/api";
 import { useAuthStore } from "@/stores/auth.store";
+import { SignInData } from "@/types/api";
 
 export const useSignIn = () => {
   const { actions } = useAuthStore();
 
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      signIn(email, password),
+    mutationFn: (data: SignInData) => signIn(data),
     onSuccess: async (data) => {
       // Lưu token vào store
       const accessToken = data.token;

@@ -139,7 +139,7 @@ export const ContactForm: React.FC = () => {
               id="agree"
               checked={formData.agree}
               onChange={handleInputChange}
-              className="h-5 w-5 rounded border-2 border-[#262626] bg-[#141414] text-[#E50000] focus:ring-2 focus:ring-[#E50000]"
+              className="h-5 w-5 cursor-pointer rounded border-2 border-[#262626] bg-[#141414] text-[#E50000]"
               required
             />
             <label htmlFor="agree" className="font-[Manrope] text-[14px] leading-relaxed text-[#999999]">
@@ -150,7 +150,7 @@ export const ContactForm: React.FC = () => {
           <Button
             type="submit"
             disabled={supportMutation.isPending}
-            className="rounded-lg bg-[#E50000] px-6 py-[18px] font-[Manrope] text-[16px] font-semibold text-white transition-all duration-300 hover:bg-[#CC0000] disabled:cursor-not-allowed disabled:opacity-50"
+            className="cursor-pointer rounded-lg bg-[#E50000] px-6 py-[18px] font-[Manrope] text-[16px] font-semibold text-white transition-all duration-300 hover:bg-[#CC0000] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {supportMutation.isPending ? "Sending..." : "Send Message"}
           </Button>

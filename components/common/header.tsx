@@ -9,24 +9,22 @@ import {
 import { ROUTES } from "@/lib/routes";
 import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
 import { useAuthStore } from "@/stores/auth.store";
-import {
-  Bell,
-  Heart,
-  History,
-  LogOut,
-  Settings,
-  User,
-} from "lucide-react";
+import { Bell, Heart, History, LogOut, Settings, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getNotifications, markNotificationAsRead, Notification } from "@/services/api";
+import {
+  getNotifications,
+  Notification,
+  markNotificationAsRead,
+} from "@/services/api";
 
 export const Header: React.FC = () => {
   const pathname = usePathname();
-  const { isAuthenticated, user, actions } = useAuthStore();
+  const { isAuthenticated, user, actions, accessToken } = useAuthStore();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSignOut = () => {
     actions.clearAuth();
@@ -44,17 +42,30 @@ export const Header: React.FC = () => {
     return pathname.startsWith(route);
   };
 
+  // Lấy thông báo khi login
   useEffect(() => {
-    if (isAuthenticated && user?.id) {
-      getNotifications(user.id)
-        .then(setNotifications)
-        .catch(console.error);
+    if (isAuthenticated && accessToken && user?.userID) {
+      setLoading(true);
+      getNotifications(user.userID)
+        .then((res) => setNotifications(res))
+        .catch((err) => console.error("Get notifications error:", err))
+        .finally(() => setLoading(false));
+    } else {
+      setNotifications([]);
     }
-  }, [isAuthenticated, user?.id]);
+  }, [isAuthenticated, accessToken, user?.userID]);
 
   const handleMarkRead = async (id: number) => {
-    await markNotificationAsRead(id);
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    if (!isAuthenticated || !accessToken) {
+      console.warn("Bạn cần đăng nhập để thao tác.");
+      return;
+    }
+    try {
+      await markNotificationAsRead(id);
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (err) {
+      console.error(`Không thể đánh dấu đã đọc cho ID ${id}:`, err);
+    }
   };
 
   return (
@@ -62,19 +73,28 @@ export const Header: React.FC = () => {
       <nav className="mx-auto hidden max-w-screen-2xl items-center justify-between px-8 py-[30px] xl:flex 2xl:px-[162px]">
         {/* Logo */}
         <Link href="/" className="flex h-[60px] w-[199px] items-center">
-          <Image src={streamVibeLogo} alt="StreamVibe Logo" className="w-full cursor-pointer" />
+          <Image
+            src={streamVibeLogo}
+            alt="StreamVibe Logo"
+            className="w-full cursor-pointer"
+          />
         </Link>
 
         {/* Menu */}
         <div className="flex items-center gap-[30px] rounded-xl border-4 border-[#1F1F1F] bg-[#0F0F0F] py-[10px] pr-[40px] pl-[10px]">
-          {navItems.map((item, index) => (
-            <div key={index}>
+          {navItems.map((item) => (
+            <div key={item.link}>
               {isActiveRoute(item.link) ? (
                 <div className="rounded-lg bg-[#1A1A1A] px-6 py-[14px]">
-                  <span className="text-[18px] font-medium text-white">{item.name}</span>
+                  <span className="text-[18px] font-medium text-white">
+                    {item.name}
+                  </span>
                 </div>
               ) : (
-                <Link href={item.link} className="block px-6 py-[14px] text-[#BFBFBF] hover:text-white">
+                <Link
+                  href={item.link}
+                  className="block px-6 py-[14px] text-[#BFBFBF] hover:text-white"
+                >
                   {item.name}
                 </Link>
               )}
@@ -104,11 +124,19 @@ export const Header: React.FC = () => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-                align="center" // căn giữa theo icon Bell
-                sideOffset={8} // khoảng cách dọc giữa icon và dropdown
-                className="w-72 max-h-96 overflow-y-auto"
-              >
-              {notifications.length > 0 ? (
+              align="center"
+              sideOffset={8}
+              className="w-72 max-h-96 overflow-y-auto"
+            >
+              {!isAuthenticated ? (
+                <DropdownMenuItem key="need-login" className="text-gray-500">
+                  Bạn cần đăng nhập để xem thông báo
+                </DropdownMenuItem>
+              ) : loading ? (
+                <DropdownMenuItem key="loading" className="text-gray-500">
+                  Đang tải thông báo...
+                </DropdownMenuItem>
+              ) : notifications.length > 0 ? (
                 notifications.map((n) => (
                   <DropdownMenuItem
                     key={n.id}
@@ -120,7 +148,9 @@ export const Header: React.FC = () => {
                   </DropdownMenuItem>
                 ))
               ) : (
-                <DropdownMenuItem>Không có thông báo</DropdownMenuItem>
+                <DropdownMenuItem key="empty">
+                  Không có thông báo
+                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -142,25 +172,22 @@ export const Header: React.FC = () => {
                 )}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" // căn giữa theo icon Bell
-                sideOffset={8} // khoảng cách dọc giữa icon và dropdown
-                className="w-72 max-h-96 overflow-y-auto"
-              >
+            <DropdownMenuContent align="end" className="w-56">
               {isAuthenticated ? (
                 <>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem key="account" asChild>
                     <Link href={ROUTES.account}>
                       <Settings className="mr-2 h-4 w-4" />
                       Account
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut}>
+                  <DropdownMenuItem key="logout" onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign out
                   </DropdownMenuItem>
                 </>
               ) : (
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem key="login" asChild>
                   <Link href={ROUTES.signIn}>
                     <User className="mr-2 h-4 w-4" />
                     Login

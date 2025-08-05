@@ -1,6 +1,12 @@
-// src/services/api.ts
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth.store";
+import {
+  CreatePaypalOrderData,
+  SignInData,
+  SignUpData,
+  SupportData,
+  PaypalOrderResponse,
+} from "@/types/api";
 
 // ================== Cấu hình Axios ==================
 const api = axios.create({
@@ -20,13 +26,13 @@ api.interceptors.request.use(
 );
 
 // ================== AUTH ==================
-export const signIn = async (email: string, password: string) => {
-  const response = await api.post("/api/auth/login", { email, password });
+export const signIn = async (data: SignInData) => {
+  const response = await api.post("/api/auth/login", data);
   return response.data;
 };
 
-export const signUp = async (name: string, email: string, password: string) => {
-  const response = await api.post("/api/auth/register", { name, email, password });
+export const signUp = async (data: SignUpData) => {
+  const response = await api.post("/api/auth/register", data);
   return response.data;
 };
 
@@ -64,12 +70,8 @@ export const getMyPayments = async () => {
   return response.data;
 };
 
-export const createPaypalOrder = async (planId: number, userId: number, paymentMethod: string) => {
-  const response = await api.post("/api/paypal/create-order", {
-    planId,
-    userId,
-    paymentMethod,
-  });
+export const createPaypalOrder = async (data: CreatePaypalOrderData): Promise<PaypalOrderResponse> => {
+  const response = await api.post("/api/paypal/create-order", data);
   return response.data;
 };
 
@@ -79,13 +81,7 @@ export const getSupportsByUser = async (userId: number) => {
   return response.data;
 };
 
-export const sendSupport = async (data: {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  message: string;
-}) => {
+export const sendSupport = async (data: SupportData) => {
   const userId = useAuthStore.getState().user?.userID || null;
   const response = await api.post("/api/supports/send", { ...data, userId });
   return response.data;
@@ -131,6 +127,7 @@ export const getNotifications = async (userId: number) => {
   return response.data;
 };
 
+// ✅ Không truyền token thủ công, interceptor lo rồi
 export const markNotificationAsRead = async (id: number) => {
   await api.put(`/notifications/${id}/read`);
 };
