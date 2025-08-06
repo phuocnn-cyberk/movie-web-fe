@@ -27,6 +27,9 @@ export interface SupportData {
   email: string;
   phoneNumber: string;
   message: string;
+  createdAt: string;
+  response: string | null;
+  supportID: number;
 }
 
 export interface CreatePaypalOrderData {
@@ -51,4 +54,27 @@ export interface PaypalPaymentResponse {
   success: boolean;
   message: string;
   orderId?: string;
+}
+
+export interface UpdateUserData {
+  name?: string;
+  phone?: string;
+}
+
+export interface ChangePasswordData {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface UploadAvatarResponse {
+  success: boolean;
+  message: string;
+  avatarUrl?: string;
+}
+
+export interface PaymentHistory {
+  paidAt: string;
+  planId: number;
+  amount: number;
+  paymentStatus: string;
 }

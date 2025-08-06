@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ROUTES } from "@/lib/routes";
+import defaultAvatar from "@/public/logos/default-avatar.svg";
 import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
 import { useAuthStore } from "@/stores/auth.store";
 import { Bell, CreditCard, HeadphonesIcon, Home, LogOut, Menu, Play, Search, User, X } from "lucide-react";
@@ -19,7 +20,7 @@ export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const { isAuthenticated, actions } = useAuthStore();
+  const { isAuthenticated, actions, user } = useAuthStore();
 
   const handleSignOut = () => {
     actions.clearAuth();
@@ -98,7 +99,7 @@ export const Header: React.FC = () => {
               <button className="flex h-[34px] w-[34px] items-center justify-center" aria-label="Profile">
                 {isAuthenticated ? (
                   <Image
-                    src="/logos/default-avatar.svg"
+                    src={user?.avatar || defaultAvatar.src}
                     alt="Profile"
                     className="h-6 w-6 rounded-full"
                     width={24}
@@ -110,6 +111,14 @@ export const Header: React.FC = () => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
+              {isAuthenticated && (
+                <DropdownMenuItem asChild>
+                  <Link href={ROUTES.accountManagement}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Account Management</span>
+                  </Link>
+                </DropdownMenuItem>
+              )}
               {isAuthenticated ? (
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />

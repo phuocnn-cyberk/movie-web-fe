@@ -7,8 +7,8 @@ export const ROUTES = {
 
   // User routes
   profile: "/profile",
-  settings: "/settings",
-  
+  accountManagement: "/account-management",
+
   // Auth routes
   signIn: "/sign-in",
   signUp: "/sign-up",
