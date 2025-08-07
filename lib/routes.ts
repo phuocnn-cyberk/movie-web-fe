@@ -4,6 +4,7 @@ export const ROUTES = {
   moviesShows: "/movies-shows",
   subscriptions: "/subscriptions",
   support: "/support",
+  notifications: "/notifications",
 
   // User routes
   profile: "/profile",

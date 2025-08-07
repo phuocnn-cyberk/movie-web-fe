@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentUser } from "@/hooks/auth/useCurrentUser";
+import { useNotification } from "@/hooks/notifications/useNotification";
 import { ROUTES } from "@/lib/routes";
 import defaultAvatar from "@/public/logos/default-avatar.svg";
 import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
@@ -16,19 +17,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
+import { Button } from "../ui/button";
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const { isAuthenticated, actions, user } = useAuthStore();
+  const { data: notifications } = useNotification();
 
-  // Sử dụng useCurrentUser để đảm bảo user data được cập nhật
   useCurrentUser();
 
   const handleSignOut = () => {
     actions.clearAuth();
   };
+
+  const unreadCount = notifications?.filter((notification) => !notification.isRead).length || 0;
 
   const navItems = [
     {
@@ -90,13 +94,23 @@ export const Header: React.FC = () => {
         </div>
 
         <div className="flex shrink-0 items-center gap-[30px]">
-          <button className="flex h-[34px] w-[34px] items-center justify-center" aria-label="Search">
-            <Search className="h-[25.5px] w-[25.5px] stroke-2 text-white" />
-          </button>
+          <Button className="h-8 w-8 cursor-pointer items-center justify-center bg-[#111111] hover:bg-black/80">
+            <Search className="text-white" />
+          </Button>
 
-          <button className="flex h-[34px] w-[34px] items-center justify-center" aria-label="Notifications">
-            <Bell className="h-[25.5px] w-[23.55px] stroke-2 text-white" />
-          </button>
+          <Link href={ROUTES.notifications} className="relative">
+            <Button className="h-8 w-8 cursor-pointer items-center justify-center bg-[#111111] hover:bg-black/80">
+              <Bell className="text-white" />
+            </Button>
+            {unreadCount > 0 && (
+              <>
+                <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500">
+                  <span className="text-xs font-bold text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                </div>
+              </>
+            )}
+          </Link>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -169,9 +183,19 @@ export const Header: React.FC = () => {
             <Search className="h-5 w-5 stroke-2 text-white" />
           </button>
 
-          <button className="flex h-8 w-8 items-center justify-center" aria-label="Notifications">
-            <Bell className="h-5 w-5 stroke-2 text-white" />
-          </button>
+          <Link href={ROUTES.notifications} className="relative">
+            <button className="flex h-8 w-8 items-center justify-center" aria-label="Notifications">
+              <Bell className="h-5 w-5 stroke-2 text-white" />
+            </button>
+            {unreadCount > 0 && (
+              <>
+                <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500">
+                  <span className="text-xs font-bold text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                </div>
+              </>
+            )}
+          </Link>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -190,6 +214,14 @@ export const Header: React.FC = () => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
+              {isAuthenticated && (
+                <DropdownMenuItem asChild>
+                  <Link href={ROUTES.accountManagement}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Account Management</span>
+                  </Link>
+                </DropdownMenuItem>
+              )}
               {isAuthenticated ? (
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -249,10 +281,23 @@ export const Header: React.FC = () => {
                 <span className="font-medium text-white">Search</span>
               </button>
 
-              <button className="flex items-center gap-2 rounded-lg bg-[#1F1F1F] px-4 py-2" aria-label="Notifications">
-                <Bell className="h-5 w-5 text-white" />
-                <span className="font-medium text-white">Notifications</span>
-              </button>
+              <Link href={ROUTES.notifications} className="relative">
+                <button
+                  className="flex items-center gap-2 rounded-lg bg-[#1F1F1F] px-4 py-2"
+                  aria-label="Notifications"
+                >
+                  <Bell className="h-5 w-5 text-white" />
+                  <span className="font-medium text-white">Notifications</span>
+                </button>
+                {unreadCount > 0 && (
+                  <>
+                    <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></div>
+                    <div className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500">
+                      <span className="text-xs font-bold text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                    </div>
+                  </>
+                )}
+              </Link>
             </div>
           </div>
         </div>

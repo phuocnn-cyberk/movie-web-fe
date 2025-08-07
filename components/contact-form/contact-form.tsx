@@ -2,6 +2,7 @@
 
 import { useSupport } from "@/hooks/support/useSupport";
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 
 export const ContactForm: React.FC = () => {
@@ -24,11 +25,21 @@ export const ContactForm: React.FC = () => {
     }));
   };
 
+  const handleValidatePhoneNumber = (phoneNumber: string) => {
+    const regex = /^[0-9]{10}$/;
+    return regex.test(phoneNumber);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.agree) {
-      alert("Please agree to the Terms of Use and Privacy Policy");
+      toast.error("Please agree to the Terms of Use and Privacy Policy");
+      return;
+    }
+
+    if (!handleValidatePhoneNumber(formData.phoneNumber)) {
+      toast.error("Please enter a valid phone number");
       return;
     }
 

@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/auth.store";
-import { CreatePaypalOrderData, SignInData, SignUpData, SupportData, SendSupportData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory } from "@/types/api";
+import { CreatePaypalOrderData, SignInData, SignUpData, SupportData, SendSupportData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification } from "@/types/api";
 import axios from "axios";
 
 const api = axios.create({
@@ -113,5 +113,16 @@ export const getPaymentsByUser = async (): Promise<PaymentHistory[]> => {
   const response = await api.get(`/api/payments/me`);
   return response.data;
 };
+
+export const getNotifications = async (userId: number): Promise<Notification[]> => {
+  const response = await api.get(`/notifications/${userId}`);
+  return response.data;
+};
+
+export const markNotificationAsRead = async (notificationId: number) => {
+  const response = await api.put(`/notifications/${notificationId}/read`);
+  return response.data;
+};
+
 
 export { api };
