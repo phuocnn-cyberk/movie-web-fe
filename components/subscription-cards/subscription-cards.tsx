@@ -42,17 +42,17 @@ export const SubscriptionCards: React.FC = () => {
 
   const handleSubscribe = async (plan: SubscriptionPlan) => {
     if (!isAuthenticated) {
-      toast.error("Vui lòng đăng nhập để đăng ký gói");
+      toast.error("Please login to subscribe");
       return;
     }
 
     if (!user?.userID) {
-      toast.error("Không tìm thấy thông tin người dùng");
+      toast.error("User not found");
       return;
     }
 
     if (plan.planId === 1) {
-      toast.success("Bạn đã sử dụng gói FREE");
+      toast.success("You are using the FREE plan");
       return;
     }
 
@@ -63,20 +63,15 @@ export const SubscriptionCards: React.FC = () => {
         paymentMethod: "paypal",
       };
 
-      console.log("🔄 Creating PayPal order with data:", orderData);
       const result = await createPaypalOrderMutation.mutateAsync(orderData);
-      console.log("✅ PayPal order result:", result);
 
       if (result && result.approvalUrl) {
-        console.log("🔗 Redirecting to PayPal:", result.approvalUrl);
         window.location.href = result.approvalUrl;
       } else {
-        console.error("❌ No approval URL in result:", result);
-        toast.error("Không thể tạo đơn hàng PayPal");
+        toast.error("Failed to create PayPal order");
       }
-    } catch (error) {
-      console.error("Error creating PayPal order:", error);
-      toast.error("Có lỗi xảy ra khi tạo đơn hàng");
+    } catch {
+      toast.error("An error occurred while creating the PayPal order");
     }
   };
 

@@ -5,6 +5,7 @@ export const ROUTES = {
   subscriptions: "/subscriptions",
   support: "/support",
   notifications: "/notifications",
+  favorites: "/favorites",
 
   // User routes
   profile: "/profile",

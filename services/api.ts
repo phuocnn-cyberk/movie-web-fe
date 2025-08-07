@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/auth.store";
-import { CreatePaypalOrderData, SignInData, SignUpData, SupportData, SendSupportData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification } from "@/types/api";
+import { CreatePaypalOrderData, SignInData, SignUpData, SupportData, SendSupportData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification, Favorite } from "@/types/api";
 import axios from "axios";
 
 const api = axios.create({
@@ -121,6 +121,11 @@ export const getNotifications = async (userId: number): Promise<Notification[]> 
 
 export const markNotificationAsRead = async (notificationId: number) => {
   const response = await api.put(`/notifications/${notificationId}/read`);
+  return response.data;
+};
+
+export const getFavorites = async (userId: number): Promise<Favorite[]> => {
+  const response = await api.get(`/favorites/${userId}`);
   return response.data;
 };
 

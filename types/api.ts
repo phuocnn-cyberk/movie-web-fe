@@ -94,3 +94,9 @@ export interface Notification {
   isRead: boolean;
   createdAt: string;
 }
+
+export interface Favorite {
+  favoriteId: number;
+  movieId: number;
+  userId: number;
+}

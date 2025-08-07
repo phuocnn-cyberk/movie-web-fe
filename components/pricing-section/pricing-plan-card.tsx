@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "../ui/button";
 
 interface PricingPlanCardProps {
   title: string;
@@ -7,37 +8,27 @@ interface PricingPlanCardProps {
   period?: string;
 }
 
-export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
-  title,
-  description,
-  price,
-  period = "/month"
-}) => {
+export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({ title, description, price, period = "/month" }) => {
   return (
-    <div className="flex-1 bg-[#1A1A1A] border border-[#262626] rounded-xl p-[50px] flex flex-col gap-[50px]">
-      {/* Title and description */}
-      <div className="flex flex-col gap-4">
-        <h3 className="text-white text-2xl font-bold leading-[1.5em]">{title}</h3>
-        <p className="text-[#999999] text-lg font-normal leading-[1.5em]">
-          {description}
-        </p>
+    <div className="flex flex-col gap-4 rounded-xl border border-[#262626] bg-[#1A1A1A] p-10">
+      <div className="flex h-full flex-col gap-4">
+        <h3 className="text-2xl leading-tight font-bold text-white">{title}</h3>
+        <p className="text-lg leading-tight font-normal text-[#999999]">{description}</p>
       </div>
-      
-      {/* Price */}
-      <div className="flex items-end justify-center gap-1">
-        <span className="text-white text-4xl font-semibold leading-[0.73em]">{price}</span>
-        <span className="text-[#999999] text-lg font-medium leading-[0.73em]">{period}</span>
+
+      <div className="flex items-end gap-1">
+        <span className="text-4xl leading-tight font-semibold text-white">{price}</span>
+        <span className="text-lg leading-tight font-medium text-[#999999]">{period}</span>
       </div>
-      
-      {/* Buttons */}
-      <div className="flex flex-col md:flex-row gap-5 w-full">
-        <button className="flex-1 bg-[#141414] border border-[#262626] text-white font-semibold text-lg py-[18px] px-6 rounded-lg">
+
+      <div className="mt-auto flex w-full flex-col gap-4">
+        <Button className="rounded-lg border border-[#262626] bg-[#141414] p-6 font-semibold text-white hover:bg-black/80">
           Start Free Trial
-        </button>
-        <button className="flex-1 bg-[#E50000] text-white font-semibold text-lg py-[18px] px-6 rounded-lg">
+        </Button>
+        <Button className="rounded-lg bg-[#E50000] p-6 text-lg font-semibold text-white hover:bg-[#E50000]/80">
           Choose Plan
-        </button>
+        </Button>
       </div>
     </div>
   );
-}; 
+};

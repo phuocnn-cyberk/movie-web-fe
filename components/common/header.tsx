@@ -12,12 +12,11 @@ import { ROUTES } from "@/lib/routes";
 import defaultAvatar from "@/public/logos/default-avatar.svg";
 import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
 import { useAuthStore } from "@/stores/auth.store";
-import { Bell, CreditCard, HeadphonesIcon, Home, LogOut, Menu, Play, Search, User, X } from "lucide-react";
+import { Bell, CreditCard, HeadphonesIcon, Heart, Home, LogOut, Menu, Play, Search, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { Button } from "../ui/button";
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -94,14 +93,14 @@ export const Header: React.FC = () => {
         </div>
 
         <div className="flex shrink-0 items-center gap-[30px]">
-          <Button className="h-8 w-8 cursor-pointer items-center justify-center bg-[#111111] hover:bg-black/80">
-            <Search className="text-white" />
-          </Button>
+          <Link href={ROUTES.favorites} className="relative">
+            <Heart className="h-5 w-5 text-white" />
+          </Link>
+
+          <Search className="h-5 w-5 text-white" />
 
           <Link href={ROUTES.notifications} className="relative">
-            <Button className="h-8 w-8 cursor-pointer items-center justify-center bg-[#111111] hover:bg-black/80">
-              <Bell className="text-white" />
-            </Button>
+            <Bell className="h-5 w-5 text-white" />
             {unreadCount > 0 && (
               <>
                 <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></div>
@@ -114,7 +113,7 @@ export const Header: React.FC = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex h-[34px] w-[34px] items-center justify-center" aria-label="Profile">
+              <button className="flex h-8 w-8 cursor-pointer items-center justify-center" aria-label="Profile">
                 {isAuthenticated ? (
                   <Image
                     src={user?.avatar || defaultAvatar.src}
@@ -124,7 +123,7 @@ export const Header: React.FC = () => {
                     height={24}
                   />
                 ) : (
-                  <User className="h-[25.5px] w-[25.5px] stroke-2 text-white" />
+                  <User className="h-6 w-6 stroke-2 text-white" />
                 )}
               </button>
             </DropdownMenuTrigger>
@@ -133,20 +132,20 @@ export const Header: React.FC = () => {
                 <DropdownMenuItem asChild>
                   <Link href={ROUTES.accountManagement}>
                     <User className="mr-2 h-4 w-4" />
-                    <span>Account Management</span>
+                    <span className="cursor-pointer">Account Management</span>
                   </Link>
                 </DropdownMenuItem>
               )}
               {isAuthenticated ? (
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
+                  <span className="cursor-pointer">Sign out</span>
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem asChild>
                   <Link href={ROUTES.signIn}>
                     <User className="mr-2 h-4 w-4" />
-                    <span>Login</span>
+                    <span className="cursor-pointer">Login</span>
                   </Link>
                 </DropdownMenuItem>
               )}
