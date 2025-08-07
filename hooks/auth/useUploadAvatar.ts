@@ -4,21 +4,21 @@ import { useAuthStore } from "@/stores/auth.store";
 
 export const useUploadAvatar = () => {
   const queryClient = useQueryClient();
-  const { actions } = useAuthStore();
+  const { user, actions } = useAuthStore();
 
   return useMutation({
     mutationFn: (file: File) => uploadAvatar(file),
-    onSuccess: (data) => {
-      if (data.success && data.avatarUrl) {
-        const currentUser = useAuthStore.getState().user;
-        if (currentUser) {
-          actions.setUser({
-            ...currentUser,
-            avatar: data.avatarUrl,
-          });
-        }
+    onSuccess: async (data) => {
+      if (data.success && data.avatarUrl && user) {
+        // Cập nhật user với avatar mới ngay lập tức
+        actions.setUser({
+          ...user,
+          avatar: data.avatarUrl,
+        });
 
-        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+        // Invalidate và refetch currentUser query để đảm bảo data đồng bộ
+        await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+        await queryClient.refetchQueries({ queryKey: ["currentUser"] });
       }
     },
   });

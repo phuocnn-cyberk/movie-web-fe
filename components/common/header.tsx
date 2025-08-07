@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCurrentUser } from "@/hooks/auth/useCurrentUser";
 import { ROUTES } from "@/lib/routes";
 import defaultAvatar from "@/public/logos/default-avatar.svg";
 import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
@@ -21,6 +22,9 @@ export const Header: React.FC = () => {
   const pathname = usePathname();
 
   const { isAuthenticated, actions, user } = useAuthStore();
+
+  // Sử dụng useCurrentUser để đảm bảo user data được cập nhật
+  useCurrentUser();
 
   const handleSignOut = () => {
     actions.clearAuth();
@@ -174,7 +178,7 @@ export const Header: React.FC = () => {
               <button className="flex h-8 w-8 items-center justify-center" aria-label="Profile">
                 {isAuthenticated ? (
                   <Image
-                    src="/logos/default-avatar.svg"
+                    src={user?.avatar || defaultAvatar.src}
                     alt="Profile"
                     className="h-6 w-6 rounded-full"
                     width={24}

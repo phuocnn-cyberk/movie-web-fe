@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/auth.store";
-import { CreatePaypalOrderData, SignInData, SignUpData, SupportData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory } from "@/types/api";
+import { CreatePaypalOrderData, SignInData, SignUpData, SupportData, SendSupportData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory } from "@/types/api";
 import axios from "axios";
 
 const api = axios.create({
@@ -32,7 +32,7 @@ export const signUp = async (data: SignUpData) => {
   return response.data;
 };
 
-export const sendSupport = async (data: SupportData) => {
+export const sendSupport = async (data: SendSupportData) => {
   const authState = useAuthStore.getState();
   const userId = authState.user?.userID;
 

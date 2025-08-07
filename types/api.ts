@@ -32,6 +32,14 @@ export interface SupportData {
   supportID: number;
 }
 
+export interface SendSupportData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  message: string;
+}
+
 export interface CreatePaypalOrderData {
   planId: number;
   userId: number;

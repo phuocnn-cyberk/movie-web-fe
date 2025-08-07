@@ -5,6 +5,7 @@ import { Header } from "@/components/common/header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCurrentUser } from "@/hooks/auth/useCurrentUser";
 import defaultAvatar from "@/public/logos/default-avatar.svg";
 import { useAuthStore } from "@/stores/auth.store";
 import { CreditCard, HelpCircle, Lock, User } from "lucide-react";
@@ -15,6 +16,9 @@ import { SupportTab } from "./support-tab";
 
 export default function AccountPage() {
   const { user } = useAuthStore();
+
+  // Sử dụng useCurrentUser để đảm bảo user data được cập nhật
+  useCurrentUser();
 
   return (
     <div className="flex min-h-screen flex-col">

@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCurrentUser } from "@/hooks/auth/useCurrentUser";
 import { useUploadAvatar } from "@/hooks/auth/useUploadAvatar";
 import defaultAvatar from "@/public/logos/default-avatar.svg";
 import { updateProfile } from "@/services/api";
 import { useAuthStore } from "@/stores/auth.store";
 import { Upload, X } from "lucide-react";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 
 export function ProfileTab() {
@@ -22,6 +23,20 @@ export function ProfileTab() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uploadAvatarMutation = useUploadAvatar();
+  const { refetch: refetchUser } = useCurrentUser();
+
+  // Cập nhật state khi user thay đổi
+  const handleUserChange = React.useCallback(() => {
+    if (user) {
+      setName(user.name || "");
+      setPhone(user.phone || "");
+    }
+  }, [user]);
+
+  // Effect để lắng nghe thay đổi user
+  React.useEffect(() => {
+    handleUserChange();
+  }, [handleUserChange]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -58,6 +73,9 @@ export function ProfileTab() {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+
+      // Refetch user data để đảm bảo avatar được cập nhật
+      await refetchUser();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Upload avatar thất bại");
     }
