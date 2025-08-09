@@ -13,10 +13,25 @@ export const PricingSection: React.FC = () => {
 
   const plans = data ? data[billingPeriod] : [];
 
+  const allPlans = useMemo(() => {
+    return [...(data?.monthly ?? []), ...(data?.yearly ?? [])];
+  }, [data]);
+
+  const pricingIdToPlan = useMemo(() => {
+    const map = new Map<string, (typeof allPlans)[number]>();
+    for (const p of allPlans) map.set(p.id, p);
+    return map;
+  }, [allPlans]);
+
   const activePricingIdSet = useMemo(() => {
     const completed = (payments ?? []).filter((p) => p.paymentStatus === "SUCCESS");
     return new Set(completed.map((p) => p.pricingId));
   }, [payments]);
+
+  const isAnyFreeActive = useMemo(() => {
+    const completed = (payments ?? []).filter((p) => p.paymentStatus === "SUCCESS");
+    return completed.some((pay) => pricingIdToPlan.get(pay.pricingId)?.price === "Free");
+  }, [payments, pricingIdToPlan]);
 
   return (
     <section id="pricing" className="w-full p-20 dark:bg-[#0F0F0F]">
@@ -58,9 +73,9 @@ export const PricingSection: React.FC = () => {
                 title={plan.title}
                 description={plan.description}
                 price={plan.price}
-                period={plan.period ?? (billingPeriod === "yearly" ? "/year" : "/month")}
+                period={plan.price === "Free" ? "" : (plan.period ?? (billingPeriod === "yearly" ? "/year" : "/month"))}
                 comingSoon={plan.comingSoon || false}
-                isActive={activePricingIdSet.has(plan.id)}
+                isActive={plan.price === "Free" ? isAnyFreeActive : activePricingIdSet.has(plan.id)}
               />
             ))}
 

@@ -51,9 +51,12 @@ export const getCurrentUser = async () => {
 
 export const createPaypalOrder = async (data: CreatePaypalOrderData): Promise<PaypalOrderResponse> => {
   try {
+    console.log("[FE] createPaypalOrder -> payload:", data);
     const response = await api.post("/api/paypal/create-order", data);
+    console.log("[FE] createPaypalOrder -> raw response.data:", response.data);
     
     if (typeof response.data === 'string') {
+      console.log("[FE] createPaypalOrder -> normalized string response to object with approvalUrl");
       return {
         orderId: 'temp-order-id',
         approvalUrl: response.data,
@@ -63,6 +66,12 @@ export const createPaypalOrder = async (data: CreatePaypalOrderData): Promise<Pa
     
     return response.data;
   } catch (error) {
+    const err: any = error;
+    console.error("[FE] createPaypalOrder -> error:", {
+      message: err?.message,
+      status: err?.response?.status,
+      data: err?.response?.data,
+    });
     throw error;
   }
 };
