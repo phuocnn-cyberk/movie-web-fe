@@ -12,7 +12,6 @@ export const PricingSection: React.FC = () => {
   const { data: payments } = useGetPaymentsByUser();
 
   const plans = data ? data[billingPeriod] : [];
-  console.log(plans);
 
   const activePricingIdSet = useMemo(() => {
     const completed = (payments ?? []).filter((p) => p.paymentStatus === "SUCCESS");
