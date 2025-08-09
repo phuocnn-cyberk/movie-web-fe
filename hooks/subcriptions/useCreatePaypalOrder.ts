@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { createPaypalOrder } from "../../services/api";
-import { CreatePaypalOrderData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse } from "@/types/api";
+import { createPaypalOrder } from "@/services/api";
+import { CreatePaypalOrderData, PaypalOrderResponse } from "@/types/api";
 
 export const useCreatePaypalOrder = () => {
   return useMutation({

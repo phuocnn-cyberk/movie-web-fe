@@ -38,7 +38,7 @@ export function BillingTab() {
                     <TableCell className="font-medium">
                       {new Date(payment.paidAt).toLocaleDateString("en-GB")}
                     </TableCell>
-                    <TableCell>{`Plan #${payment.planId}`}</TableCell>
+                    <TableCell>{payment.pricingId}</TableCell>
                     <TableCell>{payment.amount.toLocaleString()} $</TableCell>
                     <TableCell>
                       <Badge variant={payment.paymentStatus === "Completed" ? "default" : "destructive"}>

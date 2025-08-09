@@ -1,18 +1,18 @@
-import { Header } from "@/components/common/header";
+"use client";
+
 import { Footer } from "@/components/common/footer";
-import { SubscriptionHero } from "@/components/subscription-hero/subscription-hero";
-import { SubscriptionCards } from "@/components/subscription-cards/subscription-cards";
+import { Header } from "@/components/common/header";
 import { PlanComparison } from "@/components/plan-comparison/plan-comparison";
+import { PricingSection } from "@/components/pricing-section/pricing-section";
 
 export default function SubscriptionsPage() {
   return (
-    <div className="w-full min-h-screen overflow-x-hidden dark:bg-[#202020]">
+    <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
       <Header />
-      <main className="w-full dark:bg-[#0F0F0F] pt-[120px]">
-        <div className="w-full px-20 py-20">
-          <div className="max-w-[1596px] mx-auto">
-            <SubscriptionHero />
-            <SubscriptionCards />
+      <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
+        <div className="w-full px-20">
+          <div className="mx-auto max-w-[1596px]">
+            <PricingSection />
             <PlanComparison />
           </div>
         </div>
@@ -20,4 +20,4 @@ export default function SubscriptionsPage() {
       <Footer />
     </div>
   );
-} 
+}

@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/auth.store";
-import { CreatePaypalOrderData, SignInData, SignUpData, SupportData, SendSupportData, PaypalOrderResponse, PaypalPaymentData, PaypalPaymentResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification, Favorite } from "@/types/api";
+import { CreatePaypalOrderData, SignInData, SignUpData, SendSupportData, PaypalOrderResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification, Favorite, PricingPlansResponse } from "@/types/api";
 import axios from "axios";
 
 const api = axios.create({
@@ -126,6 +126,11 @@ export const markNotificationAsRead = async (notificationId: number) => {
 
 export const getFavorites = async (userId: number): Promise<Favorite[]> => {
   const response = await api.get(`/favorites/${userId}`);
+  return response.data;
+};
+
+export const getPricingPlans = async (): Promise<PricingPlansResponse> => {
+  const response = await api.get(`/api/plans/pricing`);
   return response.data;
 };
 

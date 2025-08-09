@@ -41,9 +41,9 @@ export interface SendSupportData {
 }
 
 export interface CreatePaypalOrderData {
-  planId: number;
   userId: number;
   paymentMethod: string;
+  pricingId: string;
 }
 
 export interface PaypalOrderResponse {
@@ -51,17 +51,6 @@ export interface PaypalOrderResponse {
   approvalUrl: string;
   status: string;
   token?: string;
-}
-
-export interface PaypalPaymentData {
-  token: string;
-  transactionRef: string;
-}
-
-export interface PaypalPaymentResponse {
-  success: boolean;
-  message: string;
-  orderId?: string;
 }
 
 export interface UpdateUserData {
@@ -82,7 +71,7 @@ export interface UploadAvatarResponse {
 
 export interface PaymentHistory {
   paidAt: string;
-  planId: number;
+  pricingId: string;
   amount: number;
   paymentStatus: string;
 }
@@ -99,4 +88,18 @@ export interface Favorite {
   favoriteId: number;
   movieId: number;
   userId: number;
+}
+
+export interface PricingPlan {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  period?: string;
+  comingSoon?: boolean;
+}
+
+export interface PricingPlansResponse {
+  monthly: PricingPlan[];
+  yearly: PricingPlan[];
 }
