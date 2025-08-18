@@ -163,8 +163,8 @@ export const getMovieById = async (id: string | number): Promise<MovieDTO> => {
 
 export const playMovie = async (id: string | number) => {
   try {
-    const res = await api.get(`/api/movies/video/${id}`, {
-      responseType: "blob", // 👈 để nhận stream video dạng blob
+    const res = await api.get(`/api/movies/${id}/stream`, {
+      responseType: "blob", // nhận stream video
     });
 
     // Tạo URL object cho video
@@ -181,8 +181,6 @@ export const playMovie = async (id: string | number) => {
     throw err;
   }
 };
-
-
 
 // ===================== RATINGS =====================
 export const getRatingsByMovie = async (movieId: string | number): Promise<Rating[]> => {
