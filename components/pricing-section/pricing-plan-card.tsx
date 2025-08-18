@@ -67,7 +67,7 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
 
       <div className="mt-auto flex w-full flex-col gap-4">
         <Button
-          className="rounded-lg bg-[#E50000] p-6 text-lg font-semibold text-white hover:bg-[#E50000]/80"
+          className="cursor-pointer rounded-lg bg-[#E50000] p-6 text-lg font-semibold text-white hover:bg-[#E50000]/80"
           disabled={comingSoon || isPending || isActive}
           onClick={handleSubscribe}
         >
