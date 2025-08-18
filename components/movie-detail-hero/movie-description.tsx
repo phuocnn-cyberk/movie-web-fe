@@ -19,4 +19,4 @@ export const MovieDescription: React.FC<MovieDescriptionProps> = ({ description 
       </div>
     </section>
   );
-}; 
+};

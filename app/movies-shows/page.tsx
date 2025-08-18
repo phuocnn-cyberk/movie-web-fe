@@ -3,132 +3,152 @@
 import { Footer } from "@/components/common/footer";
 import { FreeTrial } from "@/components/common/free-trial";
 import { Header } from "@/components/common/header";
-import { MovieGrid } from "@/components/movie-grid/movie-grid";
+import { useEffect, useState, useMemo } from "react";
+import { getAllMovies, getAllGenres } from "@/services/api";
+import { MovieDTO, GenreDTO } from "@/types/api";
 import { MovieHeroSection } from "@/components/movie-hero-section/movie-hero-section";
-import { useState } from "react";
+import { MovieGrid } from "@/components/movie-grid/movie-grid";
 
 export default function MoviesShowsPage() {
-  const [selectedGenre, setSelectedGenre] = useState("All");
+  const [genres, setGenres] = useState<GenreDTO[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [movies, setMovies] = useState<MovieDTO[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const featuredMovies = [
-    {
-      id: 1,
-      title: "Avengers: Endgame",
-      genre: "Action",
-      year: 2019,
-      rating: 8.4,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 2,
-      title: "The Dark Knight",
-      genre: "Action",
-      year: 2008,
-      rating: 9.0,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 3,
-      title: "Inception",
-      genre: "Drama",
-      year: 2010,
-      rating: 8.8,
-      image: "/images/movie-posters/drama-card.png",
-    },
-    {
-      id: 4,
-      title: "Interstellar",
-      genre: "Adventure",
-      year: 2014,
-      rating: 8.6,
-      image: "/images/movie-posters/adventure-card.png",
-    },
-    {
-      id: 5,
-      title: "Stranger Things",
-      genre: "Horror",
-      year: 2016,
-      rating: 8.7,
-      image: "/images/movie-posters/horror-card.png",
-    },
-    {
-      id: 6,
-      title: "Avengers: Endgame",
-      genre: "Action",
-      year: 2019,
-      rating: 8.4,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 7,
-      title: "The Dark Knight",
-      genre: "Action",
-      year: 2008,
-      rating: 9.0,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 8,
-      title: "Inception",
-      genre: "Drama",
-      year: 2010,
-      rating: 8.8,
-      image: "/images/movie-posters/drama-card.png",
-    },
-    {
-      id: 9,
-      title: "Interstellar",
-      genre: "Adventure",
-      year: 2014,
-      rating: 8.6,
-      image: "/images/movie-posters/adventure-card.png",
-    },
-    {
-      id: 10,
-      title: "Stranger Things",
-      genre: "Horror",
-      year: 2016,
-      rating: 8.7,
-      image: "/images/movie-posters/horror-card.png",
-    },
-  ];
+  // Search state
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const genres = ["All", "Action", "Drama", "Adventure", "Horror"];
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 12;
 
-  const filteredMovies =
-    selectedGenre === "All" ? featuredMovies : featuredMovies.filter((movie) => movie.genre === selectedGenre);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [genreRes, movieRes] = await Promise.all([
+          getAllGenres(),
+          getAllMovies(),
+        ]);
+        setGenres(genreRes);
+        setMovies(movieRes);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleToggleGenre = (id: number) => {
+    setSelectedGenres((prev) =>
+      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]
+    );
+    setCurrentPage(1); // reset về page 1 khi filter
+  };
+
+  // ✅ Filter movies theo genres + searchTerm
+  const filteredMovies = useMemo(() => {
+    let result = movies;
+
+    // filter theo genres
+    if (selectedGenres.length > 0) {
+      result = result.filter((m) =>
+        m.genres?.some((g) => selectedGenres.includes(g.genreID))
+      );
+    }
+
+    // filter theo search
+    if (searchTerm.trim() !== "") {
+      result = result.filter((m) =>
+        m.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return result;
+  }, [movies, selectedGenres, searchTerm]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredMovies.length / pageSize);
+  const currentMovies = filteredMovies.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
+    <div className="min-h-screen w-full dark:bg-[#202020]">
       <Header />
       <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
+        {/* Hero Section */}
         <MovieHeroSection />
 
-        <section className="px-20 py-16">
-          <div className="mb-12">
-            <h2 className="mb-4 font-[Manrope] text-3xl font-bold text-white md:text-4xl">Our Genres</h2>
-            <p className="font-[Manrope] text-lg text-[#999999]">
-              Explore our diverse collection of movies and shows from action, horror, and more
-            </p>
-          </div>
+        {/* Movie Show Page */}
+        <section className="px-10 py-16 flex gap-8">
+          {/* Left Sidebar */}
+          <aside className="w-1/4 space-y-6">
+            {/* Search Box */}
+            <div>
+              <input
+                type="text"
+                placeholder="Search movies..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1); // reset về page 1 khi search
+                }}
+                className="w-full rounded-md bg-[#1A1A1A] p-2 text-white"
+              />
+            </div>
 
-          <div className="mb-8 flex flex-wrap gap-4">
-            {genres.map((genre) => (
-              <button
-                key={genre}
-                onClick={() => setSelectedGenre(genre)}
-                className={`rounded-full border px-4 py-2 transition ${
-                  selectedGenre === genre
-                    ? "bg-white text-black"
-                    : "border-white text-white hover:bg-white hover:text-black"
-                }`}
-              >
-                {genre}
-              </button>
-            ))}
-          </div>
+            {/* Genre Filter */}
+            <div>
+              <h3 className="mb-2 text-xl font-bold text-white">Genres</h3>
+              <div className="flex flex-col gap-2">
+                {genres.map((g) => (
+                  <label
+                    key={g.genreID}
+                    className="flex items-center gap-2 text-white"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedGenres.includes(g.genreID)}
+                      onChange={() => handleToggleGenre(g.genreID)}
+                    />
+                    {g.name}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </aside>
 
-          <MovieGrid movies={filteredMovies} />
+          {/* Right Content */}
+          <div className="w-3/4 flex flex-col">
+            <div className="flex-1">
+              {loading ? (
+                <p className="text-white">Loading...</p>
+              ) : (
+                <MovieGrid movies={currentMovies} />
+              )}
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-6 flex justify-center gap-2">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === i + 1
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         <FreeTrial />
