@@ -5,98 +5,75 @@ import { FreeTrial } from "@/components/common/free-trial";
 import { Header } from "@/components/common/header";
 import { MovieGrid } from "@/components/movie-grid/movie-grid";
 import { MovieHeroSection } from "@/components/movie-hero-section/movie-hero-section";
-import { useState } from "react";
+import { useGetGenres } from "@/hooks/movies/useGetGenres";
+import { useGetMovies } from "@/hooks/movies/useGetMovies";
+import { useMemo, useState } from "react";
 
 export default function MoviesShowsPage() {
   const [selectedGenre, setSelectedGenre] = useState("All");
 
-  const featuredMovies = [
-    {
-      id: 1,
-      title: "Avengers: Endgame",
-      genre: "Action",
-      year: 2019,
-      rating: 8.4,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 2,
-      title: "The Dark Knight",
-      genre: "Action",
-      year: 2008,
-      rating: 9.0,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 3,
-      title: "Inception",
-      genre: "Drama",
-      year: 2010,
-      rating: 8.8,
-      image: "/images/movie-posters/drama-card.png",
-    },
-    {
-      id: 4,
-      title: "Interstellar",
-      genre: "Adventure",
-      year: 2014,
-      rating: 8.6,
-      image: "/images/movie-posters/adventure-card.png",
-    },
-    {
-      id: 5,
-      title: "Stranger Things",
-      genre: "Horror",
-      year: 2016,
-      rating: 8.7,
-      image: "/images/movie-posters/horror-card.png",
-    },
-    {
-      id: 6,
-      title: "Avengers: Endgame",
-      genre: "Action",
-      year: 2019,
-      rating: 8.4,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 7,
-      title: "The Dark Knight",
-      genre: "Action",
-      year: 2008,
-      rating: 9.0,
-      image: "/images/movie-posters/action-card.png",
-    },
-    {
-      id: 8,
-      title: "Inception",
-      genre: "Drama",
-      year: 2010,
-      rating: 8.8,
-      image: "/images/movie-posters/drama-card.png",
-    },
-    {
-      id: 9,
-      title: "Interstellar",
-      genre: "Adventure",
-      year: 2014,
-      rating: 8.6,
-      image: "/images/movie-posters/adventure-card.png",
-    },
-    {
-      id: 10,
-      title: "Stranger Things",
-      genre: "Horror",
-      year: 2016,
-      rating: 8.7,
-      image: "/images/movie-posters/horror-card.png",
-    },
-  ];
+  // Fetch data from API
+  const { data: moviesData, isLoading: moviesLoading, error: moviesError } = useGetMovies();
+  const { data: genresData, isLoading: genresLoading, error: genresError } = useGetGenres();
 
-  const genres = ["All", "Action", "Drama", "Adventure", "Horror"];
+  // Extract movies from response
+  // API trả về trực tiếp array, không có wrapper object
+  const movies = moviesData || [];
+  const genres = genresData || [];
 
-  const filteredMovies =
-    selectedGenre === "All" ? featuredMovies : featuredMovies.filter((movie) => movie.genre === selectedGenre);
+  // Create genres list with "All" option
+  const genresList = useMemo(() => {
+    const uniqueGenres = ["All", ...genres.map((genre) => genre.name)];
+    return uniqueGenres;
+  }, [genres]);
+
+  // Filter movies based on selected genre
+  const filteredMovies = useMemo(() => {
+    if (selectedGenre === "All") {
+      return movies;
+    }
+    return movies.filter((movie) => movie.genres?.some((genre) => genre.name === selectedGenre));
+  }, [movies, selectedGenre]);
+
+  // Loading state
+  if (moviesLoading || genresLoading) {
+    return (
+      <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
+        <Header />
+        <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
+          <MovieHeroSection />
+          <section className="px-20 py-16">
+            <div className="flex h-64 items-center justify-center">
+              <div className="text-lg text-white">Đang tải dữ liệu...</div>
+            </div>
+          </section>
+          <FreeTrial />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Error state
+  if (moviesError || genresError) {
+    return (
+      <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
+        <Header />
+        <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
+          <MovieHeroSection />
+          <section className="px-20 py-16">
+            <div className="flex h-64 items-center justify-center">
+              <div className="text-lg text-red-500">
+                Lỗi khi tải dữ liệu: {moviesError?.message || genresError?.message}
+              </div>
+            </div>
+          </section>
+          <FreeTrial />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
@@ -113,7 +90,7 @@ export default function MoviesShowsPage() {
           </div>
 
           <div className="mb-8 flex flex-wrap gap-4">
-            {genres.map((genre) => (
+            {genresList.map((genre) => (
               <button
                 key={genre}
                 onClick={() => setSelectedGenre(genre)}

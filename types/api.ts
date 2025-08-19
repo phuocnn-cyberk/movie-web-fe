@@ -103,3 +103,21 @@ export interface PricingPlansResponse {
   monthly: PricingPlan[];
   yearly: PricingPlan[];
 }
+export interface Movie {
+  movieID: number;
+  title: string;
+  description: string;
+  duration: number | null;
+  year: number | null;
+  poster: string;
+  accessLevel: string;
+  trailerURL: string;
+  videoURL: string;
+  genres: Genre[];
+  averageRating?: number;
+}
+
+export interface Genre {
+  genreID: number;
+  name: string;
+}

@@ -1,24 +1,18 @@
 "use client";
 
-import { Calendar, Film, Star } from "lucide-react";
+import { Movie } from "@/types/api";
+import { Calendar, Film } from "lucide-react";
 import React from "react";
 
-interface MovieData {
-  year: number;
-  genre: string;
-  duration: string;
-  rating: number;
-}
-
 interface MovieInfoSidebarProps {
-  movie: MovieData;
+  movie: Movie;
 }
 
 export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => {
   const movieInfo = [
     {
       label: "Released Year",
-      value: movie.year.toString(),
+      value: movie.year?.toString() || "",
       icon: <Calendar className="h-4 w-4" />,
     },
     // {
@@ -26,14 +20,14 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
     //   value: ["English", "Hindi", "Telugu"],
     //   icon: <Globe className="w-4 h-4" />
     // },
-    {
-      label: "Ratings",
-      value: `${movie.rating}/10`,
-      icon: <Star className="h-4 w-4" />,
-    },
+    // {
+    //   label: "Ratings",
+    //   value: `${movie.rating || 0}/10`,
+    //   icon: <Star className="h-4 w-4" />,
+    // },
     {
       label: "Genres",
-      value: [movie.genre, "Adventure", "Drama"],
+      value: movie.genres.map((genre) => genre.name),
       icon: <Film className="h-4 w-4" />,
     },
   ];

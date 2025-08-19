@@ -14,7 +14,7 @@ interface Review {
 }
 
 interface MovieReviewsProps {
-  movieId: string;
+  movieId: number;
 }
 
 const initialMockReviews: Review[] = [

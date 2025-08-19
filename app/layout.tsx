@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Syne } from "next/font/google";
 import { Toaster } from "sonner";
 
+import { SubscriptionDebug } from "@/components/debug/subscription-debug";
 import { QueryProvider } from "@/providers/query-client-provider";
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <QueryProvider>
           {children}
           <Toaster richColors position="top-right" />
+          <SubscriptionDebug />
         </QueryProvider>
       </body>
     </html>

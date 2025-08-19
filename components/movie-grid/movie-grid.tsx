@@ -1,74 +1,74 @@
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Play, Bookmark, Heart, Star } from "lucide-react";
-
-interface Movie {
-  id: number;
-  title: string;
-  genre: string;
-  year: number;
-  rating: number;
-  image: string;
-}
+import { Movie } from "@/types/api";
+import { Bookmark, Heart, Play, Star } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface MovieGridProps {
   movies: Movie[];
 }
 
 export const MovieGrid = ({ movies }: MovieGridProps) => {
+  const router = useRouter();
+
+  const handleMovieClick = (movieId: number) => {
+    router.push(`/movie/${movieId}`);
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {movies.map((movie) => (
-        <div key={movie.id} className="group relative bg-[#1A1A1A] rounded-lg overflow-hidden border border-[#262626] hover:border-[#E50000] transition-all duration-300">
+        <div
+          key={movie.movieID}
+          className="group relative overflow-hidden rounded-lg border border-[#262626] bg-[#1A1A1A] transition-all duration-300 hover:border-[#E50000]"
+          onClick={() => handleMovieClick(movie.movieID)}
+        >
           {/* Movie Poster */}
           <div className="relative aspect-[2/3] overflow-hidden">
             <Image
-              src={movie.image}
+              src={movie.poster}
               alt={movie.title}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            
+
             {/* Overlay khi hover */}
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <div className="flex items-center gap-2">
-                <Button 
-                  size="sm"
-                  className="bg-[#E50000] hover:bg-[#CC0000] text-white p-2 rounded-full"
-                >
-                  <Play className="w-4 h-4 fill-white" />
+                <Button size="sm" className="rounded-full bg-[#E50000] p-2 text-white hover:bg-[#CC0000]">
+                  <Play className="h-4 w-4 fill-white" />
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   size="sm"
-                  className="bg-black/50 border-white/30 text-white p-2 rounded-full hover:bg-black/70"
+                  className="rounded-full border-white/30 bg-black/50 p-2 text-white hover:bg-black/70"
                 >
-                  <Bookmark className="w-4 h-4" />
+                  <Bookmark className="h-4 w-4" />
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   size="sm"
-                  className="bg-black/50 border-white/30 text-white p-2 rounded-full hover:bg-black/70"
+                  className="rounded-full border-white/30 bg-black/50 p-2 text-white hover:bg-black/70"
                 >
-                  <Heart className="w-4 h-4" />
+                  <Heart className="h-4 w-4" />
                 </Button>
               </div>
             </div>
 
             {/* Rating Badge */}
-            <div className="absolute top-2 right-2 bg-black/70 rounded-md px-2 py-1 flex items-center gap-1">
-              <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-              <span className="text-white text-xs font-medium">{movie.rating}</span>
+            <div className="absolute top-2 right-2 flex items-center gap-1 rounded-md bg-black/70 px-2 py-1">
+              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+              <span className="text-xs font-medium text-white">{movie.averageRating?.toFixed(1) || "N/A"}</span>
             </div>
           </div>
 
           {/* Movie Info */}
           <div className="p-4">
-            <h3 className="text-white font-semibold text-sm mb-1 font-[Manrope] line-clamp-2 group-hover:text-[#E50000] transition-colors">
+            <h3 className="mb-1 line-clamp-2 font-[Manrope] text-sm font-semibold text-white transition-colors group-hover:text-[#E50000]">
               {movie.title}
             </h3>
-            <div className="flex items-center justify-between text-[#999999] text-xs">
-              <span className="font-[Manrope]">{movie.genre}</span>
+            <div className="flex items-center justify-between text-xs text-[#999999]">
+              <span className="font-[Manrope]">{movie.genres?.map((g) => g.name).join(", ") || "N/A"}</span>
               <span className="font-[Manrope]">{movie.year}</span>
             </div>
           </div>
@@ -76,4 +76,4 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
       ))}
     </div>
   );
-}; 
+};
