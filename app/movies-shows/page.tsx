@@ -6,34 +6,16 @@ import { Header } from "@/components/common/header";
 import { MovieGrid } from "@/components/movie-grid/movie-grid";
 import { MovieHeroSection } from "@/components/movie-hero-section/movie-hero-section";
 import { useAddFavourite } from "@/hooks/favourite/useAddFavourite";
-import { useFavouriteList } from "@/hooks/favourite/useFavouriteList";
 import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
-import { useGetGenres } from "@/hooks/movies/useGetGenres";
-import { useGetMovies } from "@/hooks/movies/useGetMovies";
-import { Favorite } from "@/types/api";
+import { useMoviesData } from "@/hooks/movies/useMoviesData";
 import { useMemo, useState } from "react";
 
 export default function MoviesShowsPage() {
   const [selectedGenre, setSelectedGenre] = useState("All");
 
-  const { data: moviesData, isLoading: moviesLoading, error: moviesError } = useGetMovies();
-  const { data: genresData, isLoading: genresLoading, error: genresError } = useGetGenres();
+  const { movies, genresList, favoriteMovieIds, isLoading, error } = useMoviesData();
   const { mutate: addFavorite } = useAddFavourite();
   const { mutate: removeFavorite } = useRemoveFavourite();
-  const { favouriteList: favoriteListData } = useFavouriteList();
-
-  const movies = useMemo(() => moviesData || [], [moviesData]);
-  const genres = useMemo(() => genresData || [], [genresData]);
-
-  const favoriteMovieIds = useMemo(() => {
-    const result = favoriteListData?.filter((fav) => fav && fav.movieId).map((fav: Favorite) => fav.movieId) || [];
-    return result;
-  }, [favoriteListData]);
-
-  const genresList = useMemo(() => {
-    const uniqueGenres = ["All", ...genres.map((genre) => genre.name)];
-    return uniqueGenres;
-  }, [genres]);
 
   const filteredMovies = useMemo(() => {
     if (selectedGenre === "All") {
@@ -42,7 +24,7 @@ export default function MoviesShowsPage() {
     return movies.filter((movie) => movie.genres?.some((genre) => genre.name === selectedGenre));
   }, [movies, selectedGenre]);
 
-  if (moviesLoading || genresLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
         <Header />
@@ -60,7 +42,7 @@ export default function MoviesShowsPage() {
     );
   }
 
-  if (moviesError || genresError) {
+  if (error) {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
         <Header />
@@ -68,9 +50,7 @@ export default function MoviesShowsPage() {
           <MovieHeroSection />
           <section className="px-20 py-16">
             <div className="flex h-64 items-center justify-center">
-              <div className="text-lg text-red-500">
-                Error loading data: {moviesError?.message || genresError?.message}
-              </div>
+              <div className="text-lg text-red-500">Error loading data: {error.message}</div>
             </div>
           </section>
           <FreeTrial />

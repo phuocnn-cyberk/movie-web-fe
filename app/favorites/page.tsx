@@ -1,26 +1,34 @@
 "use client";
 
 import { Header } from "@/components/common/header";
-import { useFavouriteList } from "@/hooks/favourite/useFavouriteList";
+import { MovieGrid } from "@/components/movie-grid/movie-grid";
+import { useAddFavourite } from "@/hooks/favourite/useAddFavourite";
+import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
+import { useMoviesData } from "@/hooks/movies/useMoviesData";
 
 export default function FavoritesPage() {
-  const { favouriteList, isLoading, error } = useFavouriteList();
+  const { favoriteMovies, favoriteMovieIds, isLoading, error } = useMoviesData();
+  const { mutate: addFavorite } = useAddFavourite();
+  const { mutate: removeFavorite } = useRemoveFavourite();
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
     <main className="min-h-screen w-full bg-[#0F0F0F] pt-[120px]">
       <Header />
-      <div className="container mx-auto">
-        <h1 className="text-2xl font-bold">Favorites</h1>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {favouriteList?.map((favourite) => (
-            <div key={favourite.favoriteId}>
-              {/* <Image src={favourite.movieId} alt={favourite.movieId} width={100} height={100} /> */}
-              <h2 className="text-lg font-bold">{favourite.movieId}</h2>
-            </div>
-          ))}
-        </div>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="mb-8 text-4xl font-bold text-white">My Favorites</h1>
+        {favoriteMovies.length > 0 ? (
+          <MovieGrid
+            movies={favoriteMovies}
+            addFavorite={addFavorite}
+            removeFavorite={removeFavorite}
+            favoriteMovieIds={favoriteMovieIds}
+          />
+        ) : (
+          <p className="text-center text-lg text-gray-400">You have no favorite movies yet.</p>
+        )}
       </div>
     </main>
   );

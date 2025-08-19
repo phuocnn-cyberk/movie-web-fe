@@ -1,9 +1,11 @@
 "use client";
 
+import { useAddFavourite } from "@/hooks/favourite/useAddFavourite";
+import { useFavouriteList } from "@/hooks/favourite/useFavouriteList";
+import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
 import { Movie } from "@/types/api";
 import { Bookmark, Heart, Play, Share } from "lucide-react";
-import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import VideoPlayer from "../video-player/video-player";
 
@@ -13,6 +15,20 @@ interface MovieDetailHeroProps {
 
 export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+  const { mutate: addFavorite } = useAddFavourite();
+  const { mutate: removeFavorite } = useRemoveFavourite();
+  const { favouriteList } = useFavouriteList();
+  const isFavorite = favouriteList?.some((fav) => fav.movieId === movie.movieID);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        // Autoplay was prevented.
+        console.error("Autoplay was prevented:", error);
+      });
+    }
+  }, []);
 
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
@@ -21,6 +37,15 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
   const handleCloseVideo = () => {
     setIsPlayingVideo(false);
   };
+
+  const handleToggleFavorite = (movieId: number) => {
+    if (isFavorite) {
+      removeFavorite(movieId);
+    } else {
+      addFavorite(movieId);
+    }
+  };
+
   return (
     <section className="w-full px-20 py-0">
       <div className="relative w-full overflow-hidden rounded-xl border border-[#262626]" style={{ height: "835px" }}>
@@ -29,7 +54,17 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
             <VideoPlayer movieId={movie.movieID} onClose={handleCloseVideo} className="h-full w-full" />
           ) : (
             <>
-              <Image src={movie.poster} alt={movie.title} fill className="object-cover" priority />
+              <video
+                ref={videoRef}
+                src={movie.trailerURL}
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls
+                className="h-full w-full object-cover"
+                poster={movie.poster}
+              />
               <div
                 className="absolute inset-0"
                 style={{
@@ -86,15 +121,21 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
               </Button>
 
               <div className="flex items-center gap-3">
-                <button className="rounded-lg border border-[#262626] bg-[#0F0F0F] p-[14px] transition-colors duration-200 hover:bg-[#1A1A1A]">
+                <button className="rounded-lg border border-[#262626] bg-[#0F0F0F] p-2 transition-colors duration-200 hover:bg-[#1A1A1A]">
                   <Bookmark className="h-7 w-7 text-white" strokeWidth={2} />
                 </button>
 
-                <button className="rounded-lg border border-[#262626] bg-[#0F0F0F] p-[14px] transition-colors duration-200 hover:bg-[#1A1A1A]">
-                  <Heart className="h-7 w-7 text-white" strokeWidth={2} />
+                <button
+                  className="cursor-pointer rounded-lg border border-[#262626] bg-[#0F0F0F] p-2 transition-colors duration-200 hover:bg-[#1A1A1A]"
+                  onClick={() => handleToggleFavorite(movie.movieID)}
+                  style={{
+                    backgroundColor: isFavorite ? "#E50000" : "#0F0F0F",
+                  }}
+                >
+                  <Heart className="h-7 w-7 text-white" strokeWidth={2} fill={isFavorite ? "red" : "none"} />
                 </button>
 
-                <button className="rounded-lg border border-[#262626] bg-[#0F0F0F] p-[14px] transition-colors duration-200 hover:bg-[#1A1A1A]">
+                <button className="rounded-lg border border-[#262626] bg-[#0F0F0F] p-2 transition-colors duration-200 hover:bg-[#1A1A1A]">
                   <Share className="h-7 w-7 text-white" strokeWidth={2} />
                 </button>
               </div>

@@ -16,11 +16,13 @@ import { Bell, CreditCard, HeadphonesIcon, Heart, Home, LogOut, Menu, Play, Sear
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   const { isAuthenticated, actions, user } = useAuthStore();
   const { data: notifications } = useNotification();
@@ -67,8 +69,32 @@ export const Header: React.FC = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY <= 100) {
+        setIsHeaderVisible(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        setIsHeaderVisible(false);
+      } else {
+        setIsHeaderVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <header className="fixed top-0 right-0 left-0 z-50">
+    <header
+      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${isHeaderVisible ? "translate-y-0" : "-translate-y-full"}`}
+    >
       <nav className="mx-auto hidden max-w-screen-2xl items-center justify-between px-8 py-[30px] xl:flex 2xl:px-[162px]">
         <Link href="/" aria-label="Go to homepage" className="flex h-[60px] w-[199px] shrink-0 items-center">
           <Image src={streamVibeLogo} alt="StreamVibe Logo" className="my-auto w-full shrink-0 cursor-pointer" />
