@@ -15,14 +15,13 @@ export default function MovieDetailPage() {
 
   const { data: movieData, isLoading, error } = useGetMoviesById(movieId);
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
         <Header />
-        <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
+        <main className="w-full pt-30 dark:bg-[#0F0F0F]">
           <div className="flex h-64 items-center justify-center">
-            <div className="text-lg text-white">Đang tải thông tin phim...</div>
+            <div className="text-lg text-white">Loading...</div>
           </div>
         </main>
         <Footer />
@@ -30,16 +29,13 @@ export default function MovieDetailPage() {
     );
   }
 
-  // Error state
   if (error || !movieData) {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
         <Header />
-        <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
+        <main className="w-full pt-30 dark:bg-[#0F0F0F]">
           <div className="flex h-64 items-center justify-center">
-            <div className="text-lg text-red-500">
-              Lỗi khi tải thông tin phim: {error?.message || "Không tìm thấy phim"}
-            </div>
+            <div className="text-lg text-red-500">Error loading movie data: {error?.message || "Movie not found"}</div>
           </div>
         </main>
         <Footer />
@@ -50,20 +46,16 @@ export default function MovieDetailPage() {
   return (
     <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
       <Header />
-      <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
+      <main className="w-full pt-30 dark:bg-[#0F0F0F]">
         <MovieDetailHero movie={movieData} />
 
-        {/* Movie Detail Content - 2 Column Layout */}
         <div className="w-full px-20 py-10">
           <div className="flex gap-5">
-            {/* Left Column - Description, Cast, Reviews */}
             <div className="flex flex-1 flex-col">
               <MovieDescription description={movieData.description} />
-              {/* Cast section can be added here later */}
               <MovieReviews movieId={movieId} />
             </div>
 
-            {/* Right Column - Movie Info Sidebar */}
             <MovieInfoSidebar movie={movieData} />
           </div>
         </div>

@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export const MovieHeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { data: movies } = useGetMovies();
+  const { data: movies, isLoading } = useGetMovies();
 
   const slides = movies?.slice(0, 4) || [];
 
@@ -29,6 +29,42 @@ export const MovieHeroSection = () => {
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
   }, [nextSlide]);
+
+  if (isLoading) {
+    return (
+      <section className="relative h-[835px] w-full animate-pulse bg-gray-800">
+        <div className="relative z-10 flex h-full flex-col items-center justify-end gap-[50px] px-[50px] py-[50px] pb-[20px]">
+          <div className="flex flex-col items-center justify-end gap-[30px] self-stretch">
+            <div className="flex flex-col items-center gap-1 self-stretch px-[150px]">
+              <div className="h-14 w-3/4 rounded bg-gray-700"></div>
+              <div className="mt-4 h-6 w-full rounded bg-gray-700"></div>
+              <div className="mt-2 h-6 w-5/6 rounded bg-gray-700"></div>
+            </div>
+            <div className="flex items-center gap-5">
+              <div className="h-[58px] w-40 rounded-lg bg-gray-700"></div>
+              <div className="h-[58px] w-[58px] rounded-lg bg-gray-700"></div>
+              <div className="h-[58px] w-[58px] rounded-lg bg-gray-700"></div>
+              <div className="h-[58px] w-[58px] rounded-lg bg-gray-700"></div>
+            </div>
+          </div>
+          <div className="flex w-full items-center justify-between gap-4 self-stretch">
+            <div className="h-[51px] w-[51px] rounded-lg bg-gray-700"></div>
+            <div className="flex h-1 w-[81px] items-center gap-[3px]">
+              <div className="h-full w-[23px] rounded-full bg-gray-700"></div>
+              <div className="h-full flex-1 rounded-full bg-gray-600"></div>
+              <div className="h-full flex-1 rounded-full bg-gray-600"></div>
+              <div className="h-full flex-1 rounded-full bg-gray-600"></div>
+            </div>
+            <div className="h-[51px] w-[51px] rounded-lg bg-gray-700"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!slides.length) {
+    return null;
+  }
 
   return (
     <section className="relative h-[835px] w-full">

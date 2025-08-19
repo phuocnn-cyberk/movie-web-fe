@@ -25,11 +25,6 @@ export const PricingSection: React.FC = () => {
 
   const activePricingIdSet = useMemo(() => {
     const completed = (payments ?? []).filter((p) => p.paymentStatus === "SUCCESS");
-    console.log("🔍 Pricing Section Debug:", {
-      allPayments: payments,
-      completedPayments: completed,
-      activePricingIds: completed.map((p) => p.pricingId),
-    });
     return new Set(completed.map((p) => p.pricingId));
   }, [payments]);
 

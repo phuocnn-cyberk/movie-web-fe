@@ -51,12 +51,9 @@ export const getCurrentUser = async () => {
 
 export const createPaypalOrder = async (data: CreatePaypalOrderData): Promise<PaypalOrderResponse> => {
   try {
-    console.log("[FE] createPaypalOrder -> payload:", data);
     const response = await api.post("/api/paypal/create-order", data);
-    console.log("[FE] createPaypalOrder -> raw response.data:", response.data);
     
     if (typeof response.data === 'string') {
-      console.log("[FE] createPaypalOrder -> normalized string response to object with approvalUrl");
       return {
         orderId: 'temp-order-id',
         approvalUrl: response.data,
@@ -67,11 +64,6 @@ export const createPaypalOrder = async (data: CreatePaypalOrderData): Promise<Pa
     return response.data;
   } catch (error) {
     const err: any = error;
-    console.error("[FE] createPaypalOrder -> error:", {
-      message: err?.message,
-      status: err?.response?.status,
-      data: err?.response?.data,
-    });
     throw error;
   }
 };
@@ -113,7 +105,6 @@ export const uploadAvatar = async (file: File): Promise<UploadAvatarResponse> =>
     
     return response.data;
   } catch (error) {
-    console.error("Upload avatar error:", error);
     throw new Error(error instanceof Error ? error.message : "Upload avatar failed");
   }
 };
@@ -133,8 +124,18 @@ export const markNotificationAsRead = async (notificationId: number) => {
   return response.data;
 };
 
+export const addFavorite = async (movieId: number, userId: number) => {
+  const response = await api.post(`/favorites`, { movieId, userId });
+  return response.data;
+};
+
 export const getFavorites = async (userId: number): Promise<Favorite[]> => {
   const response = await api.get(`/favorites/${userId}`);
+  return response.data;
+};
+
+export const removeFavorite = async (movieId: number, userId: number) => {
+  const response = await api.delete(`/favorites`, { data: { movieId, userId } });
   return response.data;
 };
 

@@ -48,7 +48,6 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
   return (
     <div className="w-[519px] flex-shrink-0">
       <div className="rounded-xl border border-[#262626] bg-[#1A1A1A] p-[50px]">
-        {/* Movie Info Items */}
         <div className="mb-[30px] space-y-[30px]">
           {movieInfo.map((item, index) => (
             <div key={index} className="flex flex-col gap-[14px]">
@@ -75,7 +74,6 @@ export const MovieInfoSidebar: React.FC<MovieInfoSidebarProps> = ({ movie }) => 
           ))}
         </div>
 
-        {/* Crew Info */}
         <div className="space-y-[30px]">
           {crewInfo.map((crew, index) => (
             <div key={index} className="flex flex-col gap-[14px]">

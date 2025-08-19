@@ -5,7 +5,6 @@ import { useFavouriteList } from "@/hooks/favourite/useFavouriteList";
 
 export default function FavoritesPage() {
   const { favouriteList, isLoading, error } = useFavouriteList();
-  console.log(favouriteList);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 

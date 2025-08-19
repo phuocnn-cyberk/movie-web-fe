@@ -86,8 +86,8 @@ export interface Notification {
 
 export interface Favorite {
   favoriteId: number;
-  movieId: number;
   userId: number;
+  movieId: number;
 }
 
 export interface PricingPlan {
