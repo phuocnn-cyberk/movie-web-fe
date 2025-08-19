@@ -12,22 +12,17 @@ import { useMemo, useState } from "react";
 export default function MoviesShowsPage() {
   const [selectedGenre, setSelectedGenre] = useState("All");
 
-  // Fetch data from API
   const { data: moviesData, isLoading: moviesLoading, error: moviesError } = useGetMovies();
   const { data: genresData, isLoading: genresLoading, error: genresError } = useGetGenres();
 
-  // Extract movies from response
-  // API trả về trực tiếp array, không có wrapper object
-  const movies = moviesData || [];
-  const genres = genresData || [];
+  const movies = useMemo(() => moviesData || [], [moviesData]);
+  const genres = useMemo(() => genresData || [], [genresData]);
 
-  // Create genres list with "All" option
   const genresList = useMemo(() => {
     const uniqueGenres = ["All", ...genres.map((genre) => genre.name)];
     return uniqueGenres;
   }, [genres]);
 
-  // Filter movies based on selected genre
   const filteredMovies = useMemo(() => {
     if (selectedGenre === "All") {
       return movies;
@@ -35,7 +30,6 @@ export default function MoviesShowsPage() {
     return movies.filter((movie) => movie.genres?.some((genre) => genre.name === selectedGenre));
   }, [movies, selectedGenre]);
 
-  // Loading state
   if (moviesLoading || genresLoading) {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
@@ -44,7 +38,7 @@ export default function MoviesShowsPage() {
           <MovieHeroSection />
           <section className="px-20 py-16">
             <div className="flex h-64 items-center justify-center">
-              <div className="text-lg text-white">Đang tải dữ liệu...</div>
+              <div className="text-lg text-white">Loading...</div>
             </div>
           </section>
           <FreeTrial />
@@ -54,7 +48,6 @@ export default function MoviesShowsPage() {
     );
   }
 
-  // Error state
   if (moviesError || genresError) {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
@@ -64,7 +57,7 @@ export default function MoviesShowsPage() {
           <section className="px-20 py-16">
             <div className="flex h-64 items-center justify-center">
               <div className="text-lg text-red-500">
-                Lỗi khi tải dữ liệu: {moviesError?.message || genresError?.message}
+                Error loading data: {moviesError?.message || genresError?.message}
               </div>
             </div>
           </section>

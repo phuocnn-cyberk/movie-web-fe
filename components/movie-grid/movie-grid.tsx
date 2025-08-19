@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Movie } from "@/types/api";
-import { Bookmark, Heart, Play, Star } from "lucide-react";
+import { Bookmark, Heart, Play } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -23,7 +23,6 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
           className="group relative overflow-hidden rounded-lg border border-[#262626] bg-[#1A1A1A] transition-all duration-300 hover:border-[#E50000]"
           onClick={() => handleMovieClick(movie.movieID)}
         >
-          {/* Movie Poster */}
           <div className="relative aspect-[2/3] overflow-hidden">
             <Image
               src={movie.poster}
@@ -32,7 +31,6 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
-            {/* Overlay khi hover */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <div className="flex items-center gap-2">
                 <Button size="sm" className="rounded-full bg-[#E50000] p-2 text-white hover:bg-[#CC0000]">
@@ -55,14 +53,11 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
               </div>
             </div>
 
-            {/* Rating Badge */}
             <div className="absolute top-2 right-2 flex items-center gap-1 rounded-md bg-black/70 px-2 py-1">
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-              <span className="text-xs font-medium text-white">{movie.averageRating?.toFixed(1) || "N/A"}</span>
+              <span className="text-xs font-medium text-white">{movie?.duration || "N/A"} min</span>
             </div>
           </div>
 
-          {/* Movie Info */}
           <div className="p-4">
             <h3 className="mb-1 line-clamp-2 font-[Manrope] text-sm font-semibold text-white transition-colors group-hover:text-[#E50000]">
               {movie.title}

@@ -1,7 +1,9 @@
 "use client";
 
 import { useGetPaymentsByUser } from "@/hooks/subcriptions/useGetPaymentsByUser";
+import { ROUTES } from "@/lib/routes";
 import { useAuthStore } from "@/stores/auth.store";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -15,13 +17,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<"general" | "premium" | "auth">("general");
-  const [debugInfo, setDebugInfo] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { accessToken, user } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const { data: payments } = useGetPaymentsByUser();
   const router = useRouter();
 
-  // Check if user has active subscription
   const hasActiveSubscription = payments?.some(
     (payment) => payment.paymentStatus === "SUCCESS" && payment.pricingId !== "free"
   );
@@ -30,53 +30,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !accessToken) return;
+    if (!video) return;
+
+    if (!accessToken) {
+      setErrorType("auth");
+      setError("Please login to watch this video");
+      setIsLoading(false);
+      return;
+    }
 
     const loadVideo = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        // Test endpoint trước
-        const testResponse = await fetch(streamUrl, {
-          method: "HEAD",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!testResponse.ok) {
-          // Debug info
-          const debugMsg = `
-DEBUG INFO:
-- User ID: ${user?.userID || "N/A"}
-- Has Active Subscription: ${hasActiveSubscription || false}
-- Payments Count: ${payments?.length || 0}
-- Payment Status: ${payments?.map((p) => `${p.pricingId}:${p.paymentStatus}`).join(", ") || "None"}
-- HTTP Status: ${testResponse.status}
-- Movie ID: ${movieId}
-          `.trim();
-          setDebugInfo(debugMsg);
-          console.log("VideoPlayer Debug Info:", debugMsg);
-
-          if (testResponse.status === 403) {
-            if (hasActiveSubscription) {
-              setErrorType("general");
-              throw new Error("Lỗi hệ thống: Bạn đã có subscription nhưng vẫn bị chặn. Vui lòng liên hệ support.");
-            } else {
-              setErrorType("premium");
-              throw new Error("Video này yêu cầu gói Premium để xem");
-            }
-          } else if (testResponse.status === 401) {
-            setErrorType("auth");
-            throw new Error("Vui lòng đăng nhập để xem video");
-          } else {
-            setErrorType("general");
-            throw new Error(`HTTP ${testResponse.status} - Không thể truy cập video`);
-          }
-        }
-
-        // Fetch video blob với authentication
         const response = await fetch(streamUrl, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -87,17 +54,17 @@ DEBUG INFO:
           if (response.status === 403) {
             if (hasActiveSubscription) {
               setErrorType("general");
-              throw new Error("Lỗi hệ thống: Bạn đã có subscription nhưng vẫn bị chặn khi tải video.");
+              throw new Error("System error: You have a subscription but are still blocked when loading video.");
             } else {
               setErrorType("premium");
-              throw new Error("Video này yêu cầu gói Premium để xem");
+              throw new Error("This video requires a Premium subscription to watch");
             }
           } else if (response.status === 401) {
             setErrorType("auth");
-            throw new Error("Vui lòng đăng nhập để xem video");
+            throw new Error("Please login to watch this video");
           } else {
             setErrorType("general");
-            throw new Error(`HTTP ${response.status} - Không thể tải video`);
+            throw new Error(`HTTP ${response.status} - Cannot load video`);
           }
         }
 
@@ -111,7 +78,7 @@ DEBUG INFO:
         });
 
         video.addEventListener("error", () => {
-          setError("Không thể phát video");
+          setError("Cannot play video");
           setIsLoading(false);
         });
 
@@ -119,14 +86,13 @@ DEBUG INFO:
           setIsLoading(false);
         });
 
-        // Auto play when loaded
         video.addEventListener("canplaythrough", () => {
           video.play().catch(() => {
             console.log("Auto-play prevented");
           });
         });
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Lỗi không xác định";
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
         setError(errorMessage);
         if (!errorMessage.includes("Premium") && !errorMessage.includes("đăng nhập")) {
           setErrorType("general");
@@ -137,20 +103,19 @@ DEBUG INFO:
 
     loadVideo();
 
-    // Cleanup blob URL khi component unmount
     return () => {
       if (video && video.src) {
         URL.revokeObjectURL(video.src);
       }
     };
-  }, [movieId, accessToken, streamUrl]);
+  }, [movieId, accessToken, streamUrl, hasActiveSubscription]);
 
   const handleUpgradeClick = () => {
-    router.push("/subscriptions");
+    router.push(ROUTES.subscriptions);
   };
 
   const handleLoginClick = () => {
-    router.push("/sign-in");
+    router.push(ROUTES.signIn);
   };
 
   if (error) {
@@ -159,7 +124,6 @@ DEBUG INFO:
         <div className="max-w-md p-8 text-center">
           {errorType === "premium" ? (
             <div className="space-y-6">
-              {/* Premium Required Icon */}
               <div className="flex justify-center">
                 <div className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 p-4">
                   <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,36 +137,33 @@ DEBUG INFO:
                 </div>
               </div>
 
-              {/* Premium Message */}
               <div>
-                <h3 className="mb-2 text-2xl font-bold text-white">Nội dung Premium</h3>
+                <h3 className="mb-2 text-2xl font-bold text-white">Premium Content</h3>
                 <p className="mb-4 text-gray-300">
-                  Video này chỉ dành cho thành viên Premium. Nâng cấp tài khoản để thưởng thức toàn bộ thư viện phim và
-                  chương trình chất lượng cao.
+                  This content is only available to premium members. Upgrade your account to enjoy all the movies and
+                  shows.
                 </p>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <button
                   onClick={handleUpgradeClick}
                   className="rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-3 font-semibold text-white transition-transform hover:scale-105"
                 >
-                  Nâng cấp Premium
+                  Upgrade Premium
                 </button>
                 {onClose && (
                   <button
                     onClick={onClose}
                     className="rounded-lg border border-gray-600 bg-transparent px-6 py-3 text-white transition-colors hover:bg-gray-800"
                   >
-                    Đóng
+                    Close
                   </button>
                 )}
               </div>
             </div>
           ) : errorType === "auth" ? (
             <div className="space-y-6">
-              {/* Auth Required Icon */}
               <div className="flex justify-center">
                 <div className="rounded-full bg-blue-500 p-4">
                   <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,55 +177,42 @@ DEBUG INFO:
                 </div>
               </div>
 
-              {/* Auth Message */}
               <div>
-                <h3 className="mb-2 text-2xl font-bold text-white">Yêu cầu đăng nhập</h3>
+                <h3 className="mb-2 text-2xl font-bold text-white">Login Required</h3>
                 <p className="mb-4 text-gray-300">
-                  Bạn cần đăng nhập để xem video này. Vui lòng đăng nhập hoặc tạo tài khoản mới.
+                  You need to login to watch this video. Please login or create a new account.
                 </p>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <button
                   onClick={handleLoginClick}
                   className="rounded-lg bg-[#E50000] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#CC0000]"
                 >
-                  Đăng nhập
+                  Login
                 </button>
                 {onClose && (
                   <button
                     onClick={onClose}
                     className="rounded-lg border border-gray-600 bg-transparent px-6 py-3 text-white transition-colors hover:bg-gray-800"
                   >
-                    Đóng
+                    Close
                   </button>
                 )}
               </div>
             </div>
           ) : (
             <div className="space-y-4">
-              {/* General Error */}
               <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-                <strong>Lỗi:</strong> {error}
+                <strong>Error:</strong> {error}
               </div>
-
-              {/* Debug Info */}
-              {debugInfo && (
-                <details className="rounded border border-gray-400 bg-gray-100 p-3">
-                  <summary className="cursor-pointer font-semibold text-gray-700">
-                    🔍 Thông tin debug (nhấn để xem)
-                  </summary>
-                  <pre className="mt-2 text-xs whitespace-pre-wrap text-gray-600">{debugInfo}</pre>
-                </details>
-              )}
 
               {onClose && (
                 <button
                   onClick={onClose}
                   className="rounded-lg bg-[#E50000] px-6 py-2 text-white transition-colors hover:bg-[#CC0000]"
                 >
-                  Đóng video
+                  Close
                 </button>
               )}
             </div>
@@ -290,21 +238,18 @@ DEBUG INFO:
         className="h-full w-full rounded-xl object-cover"
         preload="metadata"
         playsInline
-        poster="" // Remove poster to show loading state
+        poster=""
       >
         <source type="video/mp4" />
-        Trình duyệt không hỗ trợ video HTML5.
+        Browser does not support HTML5 video.
       </video>
 
-      {/* Close button overlay */}
       {onClose && (
         <button
           onClick={onClose}
           className="bg-opacity-50 hover:bg-opacity-75 absolute top-4 right-4 z-20 rounded-full bg-black p-2 text-white transition-all"
         >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="h-6 w-6" />
         </button>
       )}
     </div>

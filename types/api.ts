@@ -114,7 +114,6 @@ export interface Movie {
   trailerURL: string;
   videoURL: string;
   genres: Genre[];
-  averageRating?: number;
 }
 
 export interface Genre {

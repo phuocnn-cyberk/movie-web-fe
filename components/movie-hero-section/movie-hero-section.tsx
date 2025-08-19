@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useGetMovies } from "@/hooks/movies/useGetMovies";
 import { Bookmark, ChevronLeft, ChevronRight, Heart, Play, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,37 +9,9 @@ import { useCallback, useEffect, useState } from "react";
 
 export const MovieHeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { data: movies } = useGetMovies();
 
-  const slides = [
-    {
-      id: 1,
-      title: "Avengers : Endgame",
-      description:
-        "With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos's actions and undo the chaos to the universe, no matter what consequences may be in store, and no matter who they face... Avenge the fallen.",
-      image: "/images/avengers-bg.png",
-    },
-    {
-      id: 2,
-      title: "Avengers : Infinity War",
-      description:
-        "The Avengers and their allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos before his blitz of devastation and ruin puts an end to the universe.",
-      image: "/images/avengers-bg.png",
-    },
-    {
-      id: 3,
-      title: "Avengers : Age of Ultron",
-      description:
-        "When Tony Stark and Bruce Banner try to jump-start a dormant peacekeeping program called Ultron, things go horribly wrong and it's up to Earth's mightiest heroes to stop the villainous Ultron from enacting his terrible plan.",
-      image: "/images/avengers-bg.png",
-    },
-    {
-      id: 4,
-      title: "The Avengers",
-      description:
-        "Earth's mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.",
-      image: "/images/avengers-bg.png",
-    },
-  ];
+  const slides = movies?.slice(0, 4) || [];
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -63,12 +36,12 @@ export const MovieHeroSection = () => {
         <div className="relative h-full w-full">
           {slides.map((slide, index) => (
             <div
-              key={slide.id}
+              key={slide.movieID}
               className={`absolute inset-0 transition-opacity duration-1000 ${
                 index === currentSlide ? "opacity-100" : "opacity-0"
               }`}
             >
-              <Image src={slide.image} alt={slide.title} fill className="object-cover" priority={index === 0} />
+              <Image src={slide.poster} alt={slide.title} fill className="object-cover" priority={index === 0} />
             </div>
           ))}
         </div>
@@ -88,7 +61,7 @@ export const MovieHeroSection = () => {
           </div>
 
           <div className="flex items-center gap-5">
-            <Link href={`/movie/${slides[currentSlide].id}`}>
+            <Link href={`/movie/${slides[currentSlide].movieID}`}>
               <Button className="flex items-center gap-1 rounded-lg bg-[#E50000] px-6 py-[14px] font-[Manrope] text-[18px] font-semibold text-white transition-all duration-300 hover:bg-[#CC0000]">
                 <div className="flex h-7 w-7 items-center justify-center">
                   <Play className="h-[19.19px] w-[17.84px] fill-white" />
