@@ -5,7 +5,7 @@ import { useFavouriteList } from "@/hooks/favourite/useFavouriteList";
 import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
 import { Movie } from "@/types/api";
 import { Bookmark, Heart, Play, Share } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import VideoPlayer from "../video-player/video-player";
 
@@ -19,16 +19,15 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
   const { mutate: removeFavorite } = useRemoveFavourite();
   const { favouriteList } = useFavouriteList();
   const isFavorite = favouriteList?.some((fav) => fav.movieId === movie.movieID);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch((error) => {
-        // Autoplay was prevented.
-        console.error("Autoplay was prevented:", error);
-      });
+  const getDirectDropboxUrl = (url: string) => {
+    if (url && url.includes("dropbox.com") && url.includes("dl=0")) {
+      return url.replace("dl=0", "raw=1");
     }
-  }, []);
+    return url;
+  };
+
+  const directTrailerUrl = getDirectDropboxUrl(movie.trailerURL);
 
   const handlePlayVideo = () => {
     setIsPlayingVideo(true);
@@ -55,13 +54,12 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
           ) : (
             <>
               <video
-                ref={videoRef}
-                src={movie.trailerURL}
+                key={directTrailerUrl}
+                src={directTrailerUrl}
                 autoPlay
                 muted
                 loop
                 playsInline
-                controls
                 className="h-full w-full object-cover"
                 poster={movie.poster}
               />
