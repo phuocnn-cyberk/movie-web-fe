@@ -19,10 +19,8 @@ export default function MovieDetailPage() {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
         <Header />
-        <main className="w-full pt-30 dark:bg-[#0F0F0F]">
-          <div className="flex h-64 items-center justify-center">
-            <div className="text-lg text-white">Loading...</div>
-          </div>
+        <main className="w-full pt-30 dark:bg-[#0F0F0F] flex items-center justify-center">
+          <p className="text-lg text-white">Loading...</p>
         </main>
         <Footer />
       </div>
@@ -33,10 +31,10 @@ export default function MovieDetailPage() {
     return (
       <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
         <Header />
-        <main className="w-full pt-30 dark:bg-[#0F0F0F]">
-          <div className="flex h-64 items-center justify-center">
-            <div className="text-lg text-red-500">Error loading movie data: {error?.message || "Movie not found"}</div>
-          </div>
+        <main className="w-full pt-30 dark:bg-[#0F0F0F] flex items-center justify-center">
+          <p className="text-lg text-red-500">
+            Error loading movie data: {error?.message || "Movie not found"}
+          </p>
         </main>
         <Footer />
       </div>
@@ -47,15 +45,22 @@ export default function MovieDetailPage() {
     <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
       <Header />
       <main className="w-full pt-30 dark:bg-[#0F0F0F]">
+        {/* Hero Section */}
         <MovieDetailHero movie={movieData} />
 
         <div className="w-full px-20 py-10">
           <div className="flex gap-5">
+            {/* Left content */}
             <div className="flex flex-1 flex-col">
               <MovieDescription description={movieData.description} />
-              <MovieReviews movieId={movieId} />
+
+              {/* ✅ Reviews gọi API */}
+              <div className="mt-8">
+                <MovieReviews movieId={movieId} />
+              </div>
             </div>
 
+            {/* Right Sidebar */}
             <MovieInfoSidebar movie={movieData} />
           </div>
         </div>
