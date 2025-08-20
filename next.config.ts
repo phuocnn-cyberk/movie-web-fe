@@ -26,6 +26,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.youtube.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.dropbox.com",
+      },
     ],
   },
 };
