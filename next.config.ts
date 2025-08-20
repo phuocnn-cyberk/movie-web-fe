@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -28,7 +27,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "encrypted-tbn0.gstatic.com",
+        hostname: "encrypted-tbn0.gstatic.com", // giữ lại từ HEAD
+      },
+      {
+        protocol: "https",
+        hostname: "www.dropbox.com", // giữ lại từ origin/main
       },
     ],
   },
