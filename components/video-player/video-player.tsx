@@ -2,11 +2,11 @@
 
 import { useGetPaymentsByUser } from "@/hooks/subcriptions/useGetPaymentsByUser";
 import { ROUTES } from "@/lib/routes";
+import { getPlaybackLink } from "@/services/api";
 import { useAuthStore } from "@/stores/auth.store";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { getPlaybackLink } from "@/services/api"; // thêm API này ở file api.ts (mục 3)
 
 type PlaybackLinkDTO = {
   type: "bunny-embed" | "direct";
@@ -19,33 +19,22 @@ interface VideoPlayerProps {
   className?: string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  movieId,
-  onClose,
-  className = "",
-}) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className = "" }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [playback, setPlayback] = useState<PlaybackLinkDTO | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<"general" | "premium" | "auth">(
-    "general"
-  );
+  const [errorType, setErrorType] = useState<"general" | "premium" | "auth">("general");
   const videoRef = useRef<HTMLVideoElement>(null);
   const { accessToken } = useAuthStore();
   const { data: payments } = useGetPaymentsByUser();
   const router = useRouter();
 
   const hasActiveSubscription = payments?.some(
-    (payment) =>
-      payment.paymentStatus === "SUCCESS" && payment.pricingId !== "free"
+    (payment) => payment.paymentStatus === "SUCCESS" && payment.pricingId !== "free"
   );
 
-  // URL stream direct từ BE (fallback khi type === "direct")
-  const streamUrl = `${
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
-  }/api/movies/${movieId}/stream`;
+  const streamUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/movies/${movieId}/stream`;
 
-  // 1) Gọi BE lấy PlaybackLink (bunny/direct) — BE đã kiểm tra quyền
   useEffect(() => {
     let mounted = true;
 
@@ -54,7 +43,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         setIsLoading(true);
         setError(null);
 
-        // Nếu chưa đăng nhập -> hiển thị yêu cầu login (như luồng cũ)
         if (!accessToken) {
           setErrorType("auth");
           setError("Please login to watch this video");
@@ -69,8 +57,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         setIsLoading(false);
       } catch (err: unknown) {
         if (!mounted) return;
-        const status = (err as { response?: { status?: number } })?.response
-          ?.status;
+        const status = (err as { response?: { status?: number } })?.response?.status;
 
         if (status === 403) {
           setErrorType(hasActiveSubscription ? "general" : "premium");
@@ -96,7 +83,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     };
   }, [movieId, accessToken, hasActiveSubscription]);
 
-  // 2) Nếu là direct -> thực hiện fetch blob + play như cũ
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -146,13 +132,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           });
         });
       } catch (err: unknown) {
-        const message =
-          err instanceof Error ? err.message : "Unknown error";
+        const message = err instanceof Error ? err.message : "Unknown error";
         setError(message);
-        if (
-          !message.includes("Premium") &&
-          !message.includes("đăng nhập")
-        ) {
+        if (!message.includes("Premium") && !message.includes("đăng nhập")) {
           setErrorType("general");
         }
         setIsLoading(false);
@@ -172,23 +154,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleUpgradeClick = () => router.push(ROUTES.subscriptions);
   const handleLoginClick = () => router.push(ROUTES.signIn);
 
-  // UI lỗi
   if (error) {
     return (
-      <div
-        className={`relative flex h-full w-full items-center justify-center rounded-xl bg-black ${className}`}
-      >
+      <div className={`relative flex h-full w-full items-center justify-center rounded-xl bg-black ${className}`}>
         <div className="max-w-md p-8 text-center">
           {errorType === "premium" ? (
             <div className="space-y-6">
               <div className="flex justify-center">
                 <div className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 p-4">
-                  <svg
-                    className="h-12 w-12 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -199,12 +173,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 </div>
               </div>
               <div>
-                <h3 className="mb-2 text-2xl font-bold text-white">
-                  Premium Content
-                </h3>
+                <h3 className="mb-2 text-2xl font-bold text-white">Premium Content</h3>
                 <p className="mb-4 text-gray-300">
-                  This content is only available to premium members. Upgrade
-                  your account to enjoy all the movies and shows.
+                  This content is only available to premium members. Upgrade your account to enjoy all the movies and
+                  shows.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -228,12 +200,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <div className="space-y-6">
               <div className="flex justify-center">
                 <div className="rounded-full bg-blue-500 p-4">
-                  <svg
-                    className="h-12 w-12 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -244,12 +211,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 </div>
               </div>
               <div>
-                <h3 className="mb-2 text-2xl font-bold text-white">
-                  Login Required
-                </h3>
+                <h3 className="mb-2 text-2xl font-bold text-white">Login Required</h3>
                 <p className="mb-4 text-gray-300">
-                  You need to login to watch this video. Please login or create
-                  a new account.
+                  You need to login to watch this video. Please login or create a new account.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -289,12 +253,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
   }
 
-  // Loader
   if (isLoading) {
     return (
-      <div
-        className={`relative h-full w-full rounded-xl bg-black ${className}`}
-      >
+      <div className={`relative h-full w-full rounded-xl bg-black ${className}`}>
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-black">
           <div className="text-center">
             <div className="mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-[#E50000]"></div>
@@ -304,7 +265,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
   }
 
-  // 3) Render Bunny Embed hoặc video <blob>
   return (
     <div className={`relative h-full w-full rounded-xl bg-black ${className}`}>
       {playback?.type === "bunny-embed" ? (
@@ -315,13 +275,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           allowFullScreen
         />
       ) : (
-        <video
-          ref={videoRef}
-          controls
-          className="h-full w-full rounded-xl object-cover"
-          preload="metadata"
-          playsInline
-        >
+        <video ref={videoRef} controls className="h-full w-full rounded-xl object-cover" preload="metadata" playsInline>
           <source type="video/mp4" />
           Browser does not support HTML5 video.
         </video>

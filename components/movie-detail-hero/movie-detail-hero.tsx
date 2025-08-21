@@ -3,12 +3,12 @@
 import { useAddFavourite } from "@/hooks/favourite/useAddFavourite";
 import { useFavouriteList } from "@/hooks/favourite/useFavouriteList";
 import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
+import { getDirectDropboxLink } from "@/lib/getDirectDropboxLink";
 import { Movie } from "@/types/api";
 import { Bookmark, Heart, Play, Share } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import VideoPlayer from "../video-player/video-player";
-import { getDirectDropboxLink } from "@/lib/getDirectDropboxLink"; // 👈 import helper
 
 interface MovieDetailHeroProps {
   movie: Movie;
@@ -31,21 +31,14 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
 
   return (
     <section className="w-full px-20 py-0">
-      <div
-        className="relative w-full overflow-hidden rounded-xl border border-[#262626]"
-        style={{ height: "835px" }}
-      >
+      <div className="relative w-full overflow-hidden rounded-xl border border-[#262626]" style={{ height: "835px" }}>
         <div className="absolute inset-0">
           {isPlayingVideo ? (
-            <VideoPlayer
-              movieId={movie.movieID}
-              onClose={handleCloseVideo}
-              className="h-full w-full"
-            />
+            <VideoPlayer movieId={movie.movieID} onClose={handleCloseVideo} className="h-full w-full" />
           ) : (
             <>
               <video
-                src={getDirectDropboxLink(movie.trailerURL)} // 👈 convert Dropbox link
+                src={getDirectDropboxLink(movie.trailerURL)}
                 autoPlay
                 muted
                 loop
@@ -56,8 +49,7 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
               <div
                 className="absolute inset-0"
                 style={{
-                  background:
-                    "linear-gradient(180deg, rgba(20, 20, 20, 1) 0%, rgba(20, 20, 20, 0) 100%)",
+                  background: "linear-gradient(180deg, rgba(20, 20, 20, 1) 0%, rgba(20, 20, 20, 0) 100%)",
                 }}
               />
             </>
@@ -69,10 +61,7 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
             className="relative z-10 flex h-full flex-col items-center justify-end"
             style={{ padding: "50px 50px 20px" }}
           >
-            <div
-              className="mb-8 flex w-full flex-col items-center"
-              style={{ padding: "0px 150px" }}
-            >
+            <div className="mb-8 flex w-full flex-col items-center" style={{ padding: "0px 150px" }}>
               <h1
                 className="mb-1 text-center font-bold text-white"
                 style={{
@@ -122,11 +111,7 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
                   onClick={() => handleToggleFavorite(movie.movieID)}
                   style={{ backgroundColor: isFavorite ? "#E50000" : "#0F0F0F" }}
                 >
-                  <Heart
-                    className="h-7 w-7 text-white"
-                    strokeWidth={2}
-                    fill={isFavorite ? "red" : "none"}
-                  />
+                  <Heart className="h-7 w-7 text-white" strokeWidth={2} fill={isFavorite ? "red" : "none"} />
                 </button>
 
                 <button className="rounded-lg border border-[#262626] bg-[#0F0F0F] p-2 transition-colors duration-200 hover:bg-[#1A1A1A]">

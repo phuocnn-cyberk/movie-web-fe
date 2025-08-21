@@ -121,20 +121,4 @@ export interface Genre {
   name: string;
 }
 
-// Rating (Review)
-//   export interface Rating {
-//   ratingId: number;
-//   userId: number;
-//   movieId: number;
-//   stars: number;   // ✅ đổi thành stars
-//   comment: string;
-//   createdAt: string;
-// }
-
-// export interface RatingRequest {
-//   userId: number;
-//   movieId: number;
-//   stars: number;   // ✅ đổi thành stars
-//   comment: string;
-// }
-
+export interface PlaybackLinkDTO { type: "bunny-embed" | "direct"; url: string };
