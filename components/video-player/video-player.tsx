@@ -2,10 +2,16 @@
 
 import { useGetPaymentsByUser } from "@/hooks/subcriptions/useGetPaymentsByUser";
 import { ROUTES } from "@/lib/routes";
+import { getPlaybackLink } from "@/services/api";
 import { useAuthStore } from "@/stores/auth.store";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+type PlaybackLinkDTO = {
+  type: "bunny-embed" | "direct";
+  url: string;
+};
 
 interface VideoPlayerProps {
   movieId: number;
@@ -15,6 +21,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className = "" }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [playback, setPlayback] = useState<PlaybackLinkDTO | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<"general" | "premium" | "auth">("general");
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -29,36 +36,77 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
   const streamUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/movies/${movieId}/stream`;
 
   useEffect(() => {
+    let mounted = true;
+
+    const loadPlayback = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        if (!accessToken) {
+          setErrorType("auth");
+          setError("Please login to watch this video");
+          setIsLoading(false);
+          return;
+        }
+
+        const data = await getPlaybackLink(String(movieId)); // { type, url }
+        if (!mounted) return;
+
+        setPlayback(data);
+        setIsLoading(false);
+      } catch (err: unknown) {
+        if (!mounted) return;
+        const status = (err as { response?: { status?: number } })?.response?.status;
+
+        if (status === 403) {
+          setErrorType(hasActiveSubscription ? "general" : "premium");
+          setError(
+            hasActiveSubscription
+              ? "System error: You have a subscription but are still blocked when loading video."
+              : "This video requires a Premium subscription to watch"
+          );
+        } else if (status === 401) {
+          setErrorType("auth");
+          setError("Please login to watch this video");
+        } else {
+          setErrorType("general");
+          setError("Cannot load video");
+        }
+        setIsLoading(false);
+      }
+    };
+
+    loadPlayback();
+    return () => {
+      mounted = false;
+    };
+  }, [movieId, accessToken, hasActiveSubscription]);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    if (!playback || playback.type !== "direct") return;
 
-    if (!accessToken) {
-      setErrorType("auth");
-      setError("Please login to watch this video");
-      setIsLoading(false);
-      return;
-    }
+    let revoked = false;
 
-    const loadVideo = async () => {
+    const loadBlob = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
         const response = await fetch(streamUrl, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         if (!response.ok) {
           if (response.status === 403) {
-            if (hasActiveSubscription) {
-              setErrorType("general");
-              throw new Error("System error: You have a subscription but are still blocked when loading video.");
-            } else {
-              setErrorType("premium");
-              throw new Error("This video requires a Premium subscription to watch");
-            }
+            setErrorType(hasActiveSubscription ? "general" : "premium");
+            throw new Error(
+              hasActiveSubscription
+                ? "System error: You have a subscription but are still blocked when loading video."
+                : "This video requires a Premium subscription to watch"
+            );
           } else if (response.status === 401) {
             setErrorType("auth");
             throw new Error("Please login to watch this video");
@@ -70,53 +118,41 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
 
         const blob = await response.blob();
         const blobUrl = URL.createObjectURL(blob);
-
         video.src = blobUrl;
 
-        video.addEventListener("loadstart", () => {
-          setIsLoading(false);
-        });
-
+        video.addEventListener("loadstart", () => setIsLoading(false));
         video.addEventListener("error", () => {
           setError("Cannot play video");
           setIsLoading(false);
         });
-
-        video.addEventListener("canplay", () => {
-          setIsLoading(false);
-        });
-
+        video.addEventListener("canplay", () => setIsLoading(false));
         video.addEventListener("canplaythrough", () => {
           video.play().catch(() => {
             console.log("Auto-play prevented");
           });
         });
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Unknown error";
-        setError(errorMessage);
-        if (!errorMessage.includes("Premium") && !errorMessage.includes("đăng nhập")) {
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Unknown error";
+        setError(message);
+        if (!message.includes("Premium") && !message.includes("đăng nhập")) {
           setErrorType("general");
         }
         setIsLoading(false);
       }
     };
 
-    loadVideo();
+    loadBlob();
 
     return () => {
-      if (video && video.src) {
+      if (video && video.src && !revoked) {
         URL.revokeObjectURL(video.src);
+        revoked = true;
       }
     };
-  }, [movieId, accessToken, streamUrl, hasActiveSubscription]);
+  }, [playback, streamUrl, accessToken, hasActiveSubscription]);
 
-  const handleUpgradeClick = () => {
-    router.push(ROUTES.subscriptions);
-  };
-
-  const handleLoginClick = () => {
-    router.push(ROUTES.signIn);
-  };
+  const handleUpgradeClick = () => router.push(ROUTES.subscriptions);
+  const handleLoginClick = () => router.push(ROUTES.signIn);
 
   if (error) {
     return (
@@ -136,7 +172,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
                   </svg>
                 </div>
               </div>
-
               <div>
                 <h3 className="mb-2 text-2xl font-bold text-white">Premium Content</h3>
                 <p className="mb-4 text-gray-300">
@@ -144,7 +179,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
                   shows.
                 </p>
               </div>
-
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <button
                   onClick={handleUpgradeClick}
@@ -176,14 +210,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
                   </svg>
                 </div>
               </div>
-
               <div>
                 <h3 className="mb-2 text-2xl font-bold text-white">Login Required</h3>
                 <p className="mb-4 text-gray-300">
                   You need to login to watch this video. Please login or create a new account.
                 </p>
               </div>
-
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <button
                   onClick={handleLoginClick}
@@ -206,7 +238,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
               <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
                 <strong>Error:</strong> {error}
               </div>
-
               {onClose && (
                 <button
                   onClick={onClose}
@@ -222,27 +253,33 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
     );
   }
 
-  return (
-    <div className={`relative h-full w-full rounded-xl bg-black ${className}`}>
-      {isLoading && (
+  if (isLoading) {
+    return (
+      <div className={`relative h-full w-full rounded-xl bg-black ${className}`}>
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-black">
           <div className="text-center">
             <div className="mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-[#E50000]"></div>
           </div>
         </div>
-      )}
+      </div>
+    );
+  }
 
-      <video
-        ref={videoRef}
-        controls
-        className="h-full w-full rounded-xl object-cover"
-        preload="metadata"
-        playsInline
-        poster=""
-      >
-        <source type="video/mp4" />
-        Browser does not support HTML5 video.
-      </video>
+  return (
+    <div className={`relative h-full w-full rounded-xl bg-black ${className}`}>
+      {playback?.type === "bunny-embed" ? (
+        <iframe
+          src={playback.url}
+          className="h-full w-full rounded-xl"
+          allow="autoplay; fullscreen; encrypted-media"
+          allowFullScreen
+        />
+      ) : (
+        <video ref={videoRef} controls className="h-full w-full rounded-xl object-cover" preload="metadata" playsInline>
+          <source type="video/mp4" />
+          Browser does not support HTML5 video.
+        </video>
+      )}
 
       {onClose && (
         <button

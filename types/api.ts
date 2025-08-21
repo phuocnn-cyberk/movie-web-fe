@@ -120,3 +120,5 @@ export interface Genre {
   genreID: number;
   name: string;
 }
+
+export interface PlaybackLinkDTO { type: "bunny-embed" | "direct"; url: string };

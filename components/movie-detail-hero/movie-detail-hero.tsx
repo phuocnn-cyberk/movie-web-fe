@@ -3,6 +3,7 @@
 import { useAddFavourite } from "@/hooks/favourite/useAddFavourite";
 import { useFavouriteList } from "@/hooks/favourite/useFavouriteList";
 import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
+import { getDirectDropboxLink } from "@/lib/getDirectDropboxLink";
 import { Movie } from "@/types/api";
 import { Bookmark, Heart, Play, Share } from "lucide-react";
 import React, { useState } from "react";
@@ -20,29 +21,12 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
   const { favouriteList } = useFavouriteList();
   const isFavorite = favouriteList?.some((fav) => fav.movieId === movie.movieID);
 
-  const getDirectDropboxUrl = (url: string) => {
-    if (url && url.includes("dropbox.com") && url.includes("dl=0")) {
-      return url.replace("dl=0", "raw=1");
-    }
-    return url;
-  };
-
-  const directTrailerUrl = getDirectDropboxUrl(movie.trailerURL);
-
-  const handlePlayVideo = () => {
-    setIsPlayingVideo(true);
-  };
-
-  const handleCloseVideo = () => {
-    setIsPlayingVideo(false);
-  };
+  const handlePlayVideo = () => setIsPlayingVideo(true);
+  const handleCloseVideo = () => setIsPlayingVideo(false);
 
   const handleToggleFavorite = (movieId: number) => {
-    if (isFavorite) {
-      removeFavorite(movieId);
-    } else {
-      addFavorite(movieId);
-    }
+    if (isFavorite) removeFavorite(movieId);
+    else addFavorite(movieId);
   };
 
   return (
@@ -54,8 +38,7 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
           ) : (
             <>
               <video
-                key={directTrailerUrl}
-                src={directTrailerUrl}
+                src={getDirectDropboxLink(movie.trailerURL)}
                 autoPlay
                 muted
                 loop
@@ -126,9 +109,7 @@ export const MovieDetailHero: React.FC<MovieDetailHeroProps> = ({ movie }) => {
                 <button
                   className="cursor-pointer rounded-lg border border-[#262626] bg-[#0F0F0F] p-2 transition-colors duration-200 hover:bg-[#1A1A1A]"
                   onClick={() => handleToggleFavorite(movie.movieID)}
-                  style={{
-                    backgroundColor: isFavorite ? "#E50000" : "#0F0F0F",
-                  }}
+                  style={{ backgroundColor: isFavorite ? "#E50000" : "#0F0F0F" }}
                 >
                   <Heart className="h-7 w-7 text-white" strokeWidth={2} fill={isFavorite ? "red" : "none"} />
                 </button>

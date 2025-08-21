@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/auth.store";
-import { CreatePaypalOrderData, SignInData, SignUpData, SendSupportData, PaypalOrderResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification, Favorite, PricingPlansResponse, Movie, Genre } from "@/types/api";
+import { CreatePaypalOrderData, SignInData, SignUpData, SendSupportData, PaypalOrderResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification, Favorite, PricingPlansResponse, Movie, Genre, PlaybackLinkDTO } from "@/types/api";
 import axios from "axios";
 
 const api = axios.create({
@@ -157,6 +157,11 @@ export const getGenres = async (): Promise<Genre[]> => {
 export const getMovieById = async (movieId: number): Promise<Movie> => {
   const response = await api.get(`/api/movies/${movieId}`);
   return response.data;
+};
+
+export const getPlaybackLink = async (movieId: string | number): Promise<PlaybackLinkDTO> => {
+  const res = await api.get(`/api/movies/${movieId}/play`);
+  return res.data;
 };
 
 export { api };
