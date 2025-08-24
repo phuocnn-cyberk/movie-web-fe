@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/auth.store";
-import { CreatePaypalOrderData, SignInData, SignUpData, SendSupportData, PaypalOrderResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification, Favorite, PricingPlansResponse, Movie, Genre, PlaybackLinkDTO } from "@/types/api";
+import { CreatePaypalOrderData, SignInData, SignUpData, SendSupportData, PaypalOrderResponse, UpdateUserData, ChangePasswordData, UploadAvatarResponse, PaymentHistory, Notification, Favorite, PricingPlansResponse, Movie, Genre, PlaybackLinkDTO, Rating } from "@/types/api";
 import axios from "axios";
 
 const api = axios.create({
@@ -162,6 +162,26 @@ export const getMovieById = async (movieId: number): Promise<Movie> => {
 export const getPlaybackLink = async (movieId: string | number): Promise<PlaybackLinkDTO> => {
   const res = await api.get(`/api/movies/${movieId}/play`);
   return res.data;
+};
+
+export const ratingMovie = async (data: Rating): Promise<Rating> => {
+  const response = await api.post(`/api/ratings`, data);
+  return response.data;
+};
+
+export const updateRating = async (ratingId: number, data: Rating): Promise<Rating> => {
+  const response = await api.put(`/api/ratings/${ratingId}`, data);
+  return response.data;
+};
+
+export const deleteRating = async (ratingId: number) => {
+  const response = await api.delete(`/api/ratings/${ratingId}`);
+  return response.data;
+};
+
+export const getRatingsByMovieId = async (movieId: number): Promise<Rating[]> => {
+  const response = await api.get(`/api/ratings/${movieId}`);
+  return response.data;
 };
 
 export { api };

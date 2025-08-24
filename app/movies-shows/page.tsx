@@ -8,14 +8,23 @@ import { MovieHeroSection } from "@/components/movie-hero-section/movie-hero-sec
 import { useAddFavourite } from "@/hooks/favourite/useAddFavourite";
 import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
 import { useMoviesData } from "@/hooks/movies/useMoviesData";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export default function MoviesShowsPage() {
   const [selectedGenre, setSelectedGenre] = useState("All");
+  const searchParams = useSearchParams();
 
   const { movies, genresList, favoriteMovieIds, isLoading, error } = useMoviesData();
   const { mutate: addFavorite } = useAddFavourite();
   const { mutate: removeFavorite } = useRemoveFavourite();
+
+  useEffect(() => {
+    const genreFromUrl = searchParams.get("genre");
+    if (genreFromUrl && genresList.includes(genreFromUrl)) {
+      setSelectedGenre(genreFromUrl);
+    }
+  }, [searchParams, genresList]);
 
   const filteredMovies = useMemo(() => {
     if (selectedGenre === "All") {

@@ -122,3 +122,12 @@ export interface Genre {
 }
 
 export interface PlaybackLinkDTO { type: "bunny-embed" | "direct"; url: string };
+
+export interface Rating {
+  ratingId?: number;
+  userId: number;
+  movieId: number;
+  stars: number;
+  comment: string;
+  createdAt: string;
+}
