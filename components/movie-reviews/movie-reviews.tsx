@@ -1,8 +1,10 @@
 "use client";
 
 import { useMovieReviews } from "@/hooks/reviews/useMovieReviews";
+import { ROUTES } from "@/lib/routes";
 import { Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { DeleteReviewDialog } from "./delete-review-dialog";
 import { EditReviewDialog } from "./edit-review-dialog";
@@ -261,11 +263,7 @@ export const MovieReviews: React.FC<MovieReviewsProps> = ({ movieId }) => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1 text-xs text-[#666666]">
-                    <span>Helpful?</span>
-                    {/* <button className="ml-2 flex items-center gap-1 rounded-md bg-[#262626] px-2 py-1 transition-colors hover:bg-[#3A3A3A]">
-                      <span>👍</span>
-                      <span>12</span>
-                    </button> */}
+                    <Link href={ROUTES.support}>Helpful?</Link>
                   </div>
 
                   <div className="flex gap-2">

@@ -1,30 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { useMovieInteractions } from "@/hooks/favourite/useMovieInteractions";
 import { Movie } from "@/types/api";
 import { Bookmark, Heart, Play } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 interface MovieGridProps {
   movies: Movie[];
-  addFavorite: (movieId: number) => void;
-  removeFavorite: (movieId: number) => void;
-  favoriteMovieIds: number[];
 }
 
-export const MovieGrid = ({ movies, addFavorite, removeFavorite, favoriteMovieIds }: MovieGridProps) => {
-  const router = useRouter();
-
-  const handleMovieClick = (movieId: number) => {
-    router.push(`/movie/${movieId}`);
-  };
-
-  const handleToggleFavorite = (movieId: number, isFavorite: boolean) => {
-    if (isFavorite) {
-      removeFavorite(movieId);
-    } else {
-      addFavorite(movieId);
-    }
-  };
+export const MovieGrid = ({ movies }: MovieGridProps) => {
+  const { handleMovieClick, handleToggleFavorite, favoriteMovieIds } = useMovieInteractions();
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -63,7 +48,7 @@ export const MovieGrid = ({ movies, addFavorite, removeFavorite, favoriteMovieId
                     variant="outline"
                     size="sm"
                     className="cursor-pointer rounded-full border-white/30 bg-black/50 p-2 text-white hover:bg-black/70"
-                    onClick={() => handleToggleFavorite(movie.movieID, isFavorite)}
+                    onClick={() => handleToggleFavorite(movie.movieID)}
                   >
                     <Heart className="h-4 w-4" fill={isFavorite ? "red" : "none"} />
                   </Button>

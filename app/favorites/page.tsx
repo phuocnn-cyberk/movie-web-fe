@@ -2,14 +2,10 @@
 
 import { Header } from "@/components/common/header";
 import { MovieGrid } from "@/components/movie-grid/movie-grid";
-import { useAddFavourite } from "@/hooks/favourite/useAddFavourite";
-import { useRemoveFavourite } from "@/hooks/favourite/useRemoveFavourite";
 import { useMoviesData } from "@/hooks/movies/useMoviesData";
 
 export default function FavoritesPage() {
-  const { favoriteMovies, favoriteMovieIds, isLoading, error } = useMoviesData();
-  const { mutate: addFavorite } = useAddFavourite();
-  const { mutate: removeFavorite } = useRemoveFavourite();
+  const { favoriteMovies, isLoading, error } = useMoviesData();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -20,12 +16,7 @@ export default function FavoritesPage() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="mb-8 text-4xl font-bold text-white">My Favorites</h1>
         {favoriteMovies.length > 0 ? (
-          <MovieGrid
-            movies={favoriteMovies}
-            addFavorite={addFavorite}
-            removeFavorite={removeFavorite}
-            favoriteMovieIds={favoriteMovieIds}
-          />
+          <MovieGrid movies={favoriteMovies} />
         ) : (
           <p className="text-center text-lg text-gray-400">You have no favorite movies yet.</p>
         )}

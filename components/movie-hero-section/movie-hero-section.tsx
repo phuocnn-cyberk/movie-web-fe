@@ -1,38 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useGetMovies } from "@/hooks/movies/useGetMovies";
+import { useMovieSlide } from "@/hooks/favourite/useMovieSlide";
 import { Bookmark, ChevronLeft, ChevronRight, Heart, Play, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
 
 export const MovieHeroSection = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const { data: movies, isLoading } = useGetMovies();
-
-  const slides = movies?.slice(0, 4) || [];
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  }, [slides.length]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  }, [slides.length]);
-
-  const goToSlide = useCallback((index: number) => {
-    setCurrentSlide(index);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(nextSlide, 5000);
-    return () => clearInterval(interval);
-  }, [nextSlide]);
+  const { currentSlide, slides, isLoading, nextSlide, prevSlide, goToSlide, favoriteMovieIds, handleToggleFavorite } =
+    useMovieSlide();
 
   if (isLoading) {
     return (
-      <section className="relative h-[835px] w-full animate-pulse bg-gray-800">
+      <section className="relative h-screen w-full animate-pulse bg-gray-800">
         <div className="relative z-10 flex h-full flex-col items-center justify-end gap-[50px] px-[50px] py-[50px] pb-[20px]">
           <div className="flex flex-col items-center justify-end gap-[30px] self-stretch">
             <div className="flex flex-col items-center gap-1 self-stretch px-[150px]">
@@ -67,7 +47,7 @@ export const MovieHeroSection = () => {
   }
 
   return (
-    <section className="relative h-[835px] w-full">
+    <section className="relative h-screen w-full">
       <div className="absolute inset-0">
         <div className="relative h-full w-full">
           {slides.map((slide, index) => (
@@ -82,16 +62,17 @@ export const MovieHeroSection = () => {
           ))}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/0 to-[#141414]/0"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/0 to-[#141414]/0"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#141414]"></div>
       </div>
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-end gap-[50px] px-[50px] py-[50px] pb-[20px]">
-        <div className="flex flex-col items-center justify-end gap-[30px] self-stretch">
-          <div className="flex flex-col items-center gap-1 self-stretch px-[150px]">
-            <h1 className="w-full text-center font-[Manrope] text-[38px] leading-[1.5em] font-bold text-white">
+      <div className="relative z-10 flex h-full flex-col items-center justify-end gap-10 px-10 py-10 pb-5">
+        <div className="flex flex-col items-center justify-end gap-8">
+          <div className="flex flex-col items-center gap-1">
+            <h1 className="w-full text-center font-[Manrope] text-2xl leading-tight font-bold text-white">
               {slides[currentSlide].title}
             </h1>
-            <p className="w-full text-center font-[Manrope] text-[18px] leading-[1.5em] font-medium text-[#999999]">
+            <p className="w-full text-center font-[Manrope] text-lg leading-tight font-medium text-[#999999]">
               {slides[currentSlide].description}
             </p>
           </div>
@@ -100,30 +81,28 @@ export const MovieHeroSection = () => {
             <Link href={`/movie/${slides[currentSlide].movieID}`}>
               <Button className="flex items-center gap-1 rounded-lg bg-[#E50000] px-6 py-[14px] font-[Manrope] text-[18px] font-semibold text-white transition-all duration-300 hover:bg-[#CC0000]">
                 <div className="flex h-7 w-7 items-center justify-center">
-                  <Play className="h-[19.19px] w-[17.84px] fill-white" />
+                  <Play className="h-5 w-5 fill-white" />
                 </div>
                 Play Now
               </Button>
             </Link>
 
             <div className="flex items-center gap-[10px]">
-              <Button
-                variant="outline"
-                className="rounded-lg border-[#262626] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
-              >
-                <Bookmark className="h-[14px] w-[14px] text-white" />
+              <Button variant="outline" className="rounded-lg border-[#262626] bg-[#0F0F0F] hover:border-[#404040]">
+                <Bookmark className="h-4 w-4 text-white" />
               </Button>
               <Button
                 variant="outline"
-                className="rounded-lg border-[#262626] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
+                className="cursor-pointer rounded-lg border-[#262626] bg-[#0F0F0F] hover:border-[#404040]"
+                onClick={() => handleToggleFavorite(slides[currentSlide].movieID)}
               >
-                <Heart className="h-[21px] w-[22.75px] text-white" />
+                <Heart
+                  className="h-5 w-5 text-white"
+                  fill={favoriteMovieIds.includes(slides[currentSlide].movieID) ? "red" : "none"}
+                />
               </Button>
-              <Button
-                variant="outline"
-                className="rounded-lg border-[#262626] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
-              >
-                <Share2 className="h-[20.28px] w-[22.75px] text-white" />
+              <Button variant="outline" className="rounded-lg border-[#262626] bg-[#0F0F0F] hover:border-[#404040]">
+                <Share2 className="h-5 w-5 text-white" />
               </Button>
             </div>
           </div>
@@ -133,9 +112,9 @@ export const MovieHeroSection = () => {
           <Button
             variant="outline"
             onClick={prevSlide}
-            className="rounded-lg border-[#1F1F1F] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
+            className="cursor-pointer rounded-lg border-[#1F1F1F] bg-[#0F0F0F] hover:border-[#404040]"
           >
-            <ChevronLeft className="h-[15.75px] w-[17.5px] text-white" />
+            <ChevronLeft className="h-4 w-4 text-white" />
           </Button>
 
           <div className="flex w-[81px] items-center gap-[3px]">
@@ -153,9 +132,9 @@ export const MovieHeroSection = () => {
           <Button
             variant="outline"
             onClick={nextSlide}
-            className="rounded-lg border-[#1F1F1F] bg-[#0F0F0F] p-[14px] hover:border-[#404040]"
+            className="cursor-pointer rounded-lg border-[#1F1F1F] bg-[#0F0F0F] hover:border-[#404040]"
           >
-            <ChevronRight className="h-[17.5px] w-[21px] text-white" />
+            <ChevronRight className="h-4 w-4 text-white" />
           </Button>
         </div>
       </div>
