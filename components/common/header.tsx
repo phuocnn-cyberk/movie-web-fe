@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import { SearchDialog } from "../search/search-dialog";
 
 export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -123,7 +124,7 @@ export const Header: React.FC = () => {
             <Heart className="h-5 w-5 text-white" />
           </Link>
 
-          <Search className="h-5 w-5 text-white" />
+          <SearchDialog />
 
           <Link href={ROUTES.notifications} className="relative">
             <Bell className="h-5 w-5 text-white" />
@@ -204,10 +205,7 @@ export const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="flex h-8 w-8 items-center justify-center" aria-label="Search">
-            <Search className="h-5 w-5 stroke-2 text-white" />
-          </button>
-
+          <SearchDialog />
           <Link href={ROUTES.notifications} className="relative">
             <button className="flex h-8 w-8 items-center justify-center" aria-label="Notifications">
               <Bell className="h-5 w-5 stroke-2 text-white" />
@@ -301,14 +299,18 @@ export const Header: React.FC = () => {
             ))}
 
             <div className="flex items-center gap-4 border-t border-[#1F1F1F] px-4 pt-4">
-              <button className="flex items-center gap-2 rounded-lg bg-[#1F1F1F] px-4 py-2" aria-label="Search">
-                <Search className="h-5 w-5 text-white" />
-                <span className="font-medium text-white">Search</span>
-              </button>
+              <div className="flex-1">
+                <SearchDialog>
+                  <div className="flex items-center gap-2 rounded-lg bg-[#1F1F1F] px-4 py-2">
+                    <Search className="h-5 w-5 text-white" />
+                    <span className="font-medium text-white">Search</span>
+                  </div>
+                </SearchDialog>
+              </div>
 
-              <Link href={ROUTES.notifications} className="relative">
+              <Link href={ROUTES.notifications} className="relative flex-1">
                 <button
-                  className="flex items-center gap-2 rounded-lg bg-[#1F1F1F] px-4 py-2"
+                  className="flex w-full items-center gap-2 rounded-lg bg-[#1F1F1F] px-4 py-2"
                   aria-label="Notifications"
                 >
                   <Bell className="h-5 w-5 text-white" />

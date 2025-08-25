@@ -3,6 +3,7 @@ import { useMovieInteractions } from "@/hooks/favourite/useMovieInteractions";
 import { Movie } from "@/types/api";
 import { Bookmark, Heart, Play } from "lucide-react";
 import Image from "next/image";
+import { Badge } from "../ui/badge";
 
 interface MovieGridProps {
   movies: Movie[];
@@ -21,6 +22,11 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
             className="group relative overflow-hidden rounded-lg border border-[#262626] bg-[#1A1A1A] transition-all duration-300 hover:border-[#E50000]"
           >
             <div className="relative aspect-[2/3] overflow-hidden">
+              {movie.accessLevel === "PREMIUM" && (
+                <Badge variant="destructive" className="absolute top-2 left-2 z-10 !bg-[#E50000]">
+                  Premium
+                </Badge>
+              )}
               <Image
                 src={movie.poster}
                 alt={movie.title}

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Footer } from "@/components/common/footer";
 import { Button } from "@/components/ui/button";
@@ -18,17 +18,33 @@ const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const signInMutation = useSignIn();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await signInMutation.mutateAsync({ email, password });
-      toast.success("Sign in successful");
-      router.push(ROUTES.home);
-    } catch {
-      toast.error("Sign in failed");
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
     }
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    signInMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          if (rememberMe) {
+            localStorage.setItem("rememberedEmail", email);
+          } else {
+            localStorage.removeItem("rememberedEmail");
+          }
+          toast.success("Sign in successful");
+          router.push(ROUTES.home);
+        },
+      }
+    );
   };
 
   return (
@@ -92,13 +108,15 @@ const LoginPage = () => {
               <Checkbox
                 id="remember"
                 className="border-zinc-400 data-[state=checked]:bg-zinc-700 data-[state=checked]:text-black"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
               />
               <Label htmlFor="remember" className="cursor-pointer select-none">
                 Remember me
               </Label>
             </div>
-            <Link href="#" className="hover:underline">
-              Need help?
+            <Link href={ROUTES.forgotPassword} className="hover:underline">
+              Forgot password?
             </Link>
           </div>
           <div className="mt-12 text-zinc-400">

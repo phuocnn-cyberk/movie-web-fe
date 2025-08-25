@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 import { signIn } from "@/services/api";
 import { useAuthStore } from "@/stores/auth.store";
@@ -16,6 +17,10 @@ export const useSignIn = () => {
 
       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       await queryClient.refetchQueries({ queryKey: ["currentUser"] });
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.message || "Sign in failed. Please check your credentials.";
+      toast.error(message);
     },
   });
 };

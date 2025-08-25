@@ -21,15 +21,17 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const signUpMutation = useSignUp();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await signUpMutation.mutateAsync({ name, email, password });
-      toast.success("Sign up successful");
-      router.push(ROUTES.signIn);
-    } catch {
-      toast.error("Sign up failed");
-    }
+    signUpMutation.mutate(
+      { name, email, password },
+      {
+        onSuccess: () => {
+          toast.success("Sign up successful. Please sign in.");
+          router.push(ROUTES.signIn);
+        },
+      }
+    );
   };
 
   return (
@@ -91,15 +93,20 @@ const SignUpPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button type="submit" variant="destructive" className="mt-6 h-12 w-full text-base font-bold">
-              Sign Up
+            <Button
+              type="submit"
+              variant="destructive"
+              className="mt-6 h-12 w-full !bg-[#e50914] text-base font-bold"
+              disabled={signUpMutation.isPending}
+            >
+              {signUpMutation.isPending ? "Signing up..." : "Sign up"}
             </Button>
           </form>
           <div className="mt-4 flex items-center justify-between text-sm text-zinc-400">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="remember"
-                className="border-zinc-400 data-[state=checked]:bg-zinc-700 data-[state=checked]:text-white"
+                className="border-zinc-400 data-[state=checked]:bg-zinc-700 data-[state=checked]:text-black"
               />
               <Label htmlFor="remember" className="cursor-pointer select-none">
                 Remember me

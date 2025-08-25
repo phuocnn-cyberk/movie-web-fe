@@ -116,6 +116,13 @@ export interface Movie {
   genres: Genre[];
 }
 
+export interface PagedMovieResponse {
+  data: Movie[];
+  totalPages: number;
+  currentPage: number;
+  totalItems: number;
+}
+
 export interface Genre {
   genreID: number;
   name: string;

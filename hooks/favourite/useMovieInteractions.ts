@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useFavouriteList } from "./useFavouriteList";
 import { useAddFavourite } from "./useAddFavourite";
 import { useRemoveFavourite } from "./useRemoveFavourite";
+import { ROUTES } from "@/lib/routes";
 
 export const useMovieInteractions = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ export const useMovieInteractions = () => {
   }, [favouriteList]);
 
   const handleMovieClick = (movieId: number) => {
-    router.push(`/movie/${movieId}`);
+    router.push(ROUTES.movieDetail(movieId));
   };
 
   const handleToggleFavorite = (movieId: number) => {

@@ -32,6 +32,16 @@ export const signUp = async (data: SignUpData) => {
   return response.data;
 };
 
+export const forgotPassword = async (email: string) => {
+  const response = await api.post("/api/auth/forgot-password", { email });
+  return response.data;
+};
+
+export const resetPassword = async (data: any) => {
+  const response = await api.post("/api/auth/reset-password", data);
+  return response.data;
+};
+
 export const sendSupport = async (data: SendSupportData) => {
   const authState = useAuthStore.getState();
   const userId = authState.user?.userID;
