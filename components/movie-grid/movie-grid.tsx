@@ -1,25 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { useMovieInteractions } from "@/hooks/favourite/useMovieInteractions";
-import { Movie } from "@/types/api";
+import { Movie, WatchHistory } from "@/types/api";
 import { Bookmark, Heart, Play } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 
 interface MovieGridProps {
   movies: Movie[];
+  watchHistoryMode?: boolean;
+  watchHistoryData?: WatchHistory[];
 }
 
-export const MovieGrid = ({ movies }: MovieGridProps) => {
+export const MovieGrid = ({ movies, watchHistoryMode = false, watchHistoryData = [] }: MovieGridProps) => {
   const { handleMovieClick, handleToggleFavorite, favoriteMovieIds } = useMovieInteractions();
+
+  const getWatchHistoryForMovie = (movieId: number) => {
+    return watchHistoryData.find((item) => item.movieId === movieId);
+  };
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {movies.map((movie) => {
         const isFavorite = favoriteMovieIds.includes(movie.movieID);
+        const watchHistory = watchHistoryMode ? getWatchHistoryForMovie(movie.movieID) : null;
         return (
           <div
             key={movie.movieID}
-            className="group relative overflow-hidden rounded-lg border border-[#262626] bg-[#1A1A1A] transition-all duration-300 hover:border-[#E50000]"
+            className="group relative cursor-pointer overflow-hidden rounded-lg border border-[#262626] bg-[#1A1A1A] transition-all duration-300 hover:scale-105 hover:border-[#E50000]"
           >
             <div className="relative aspect-[2/3] overflow-hidden">
               {movie.accessLevel === "PREMIUM" && (
@@ -70,10 +77,29 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
               <h3 className="mb-1 line-clamp-2 font-[Manrope] text-sm font-semibold text-white transition-colors group-hover:text-[#E50000]">
                 {movie.title}
               </h3>
-              <div className="flex items-center justify-between text-xs text-[#999999]">
-                <span className="font-[Manrope]">{movie.genres?.map((g) => g.name).join(", ") || "N/A"}</span>
-                <span className="font-[Manrope]">{movie.year}</span>
-              </div>
+
+              {watchHistoryMode && watchHistory ? (
+                <div className="flex flex-col gap-2 text-xs text-[#999999]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-[Manrope]">Watched:</span>
+                    <span className="font-[Manrope] font-medium text-[#E50000]">
+                      {watchHistory.watchedMinutes === 0
+                        ? "Vừa bắt đầu"
+                        : watchHistory.watchedMinutes < 60
+                          ? `${watchHistory.watchedMinutes} phút`
+                          : `${Math.floor(watchHistory.watchedMinutes / 60)}h ${watchHistory.watchedMinutes % 60}m`}
+                    </span>
+                  </div>
+                  <div className="font-[Manrope]">
+                    Started: {new Date(watchHistory.watchedAt).toLocaleDateString("en-US")}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between text-xs text-[#999999]">
+                  <span className="font-[Manrope]">{movie.genres?.map((g) => g.name).join(", ") || "N/A"}</span>
+                  <span className="font-[Manrope]">{movie.year}</span>
+                </div>
+              )}
             </div>
           </div>
         );

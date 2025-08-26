@@ -128,7 +128,15 @@ export interface Genre {
   name: string;
 }
 
-export interface PlaybackLinkDTO { type: "bunny-embed" | "direct"; url: string };
+export interface PlaybackLinkDTO { 
+  type: "bunny-embed" | "direct"; 
+  url: string 
+}
+
+export interface VideoPlayerError {
+  message: string;
+  type: "general" | "premium" | "auth";
+}
 
 export interface Rating {
   ratingId?: number;
@@ -137,4 +145,14 @@ export interface Rating {
   stars: number;
   comment: string;
   createdAt: string;
+}
+
+
+export interface WatchHistory {
+  historyId: number;
+  movieId: number;
+  movieTitle: string;
+  moviePoster: string;
+  watchedAt: string;
+  watchedMinutes: number;
 }

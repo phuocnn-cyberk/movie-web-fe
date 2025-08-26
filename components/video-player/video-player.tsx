@@ -1,17 +1,10 @@
 "use client";
 
-import { useGetPaymentsByUser } from "@/hooks/subcriptions/useGetPaymentsByUser";
+import { useVideoPlayer } from "@/hooks/video-player/useVideoPlayer";
 import { ROUTES } from "@/lib/routes";
-import { getPlaybackLink } from "@/services/api";
-import { useAuthStore } from "@/stores/auth.store";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-
-type PlaybackLinkDTO = {
-  type: "bunny-embed" | "direct";
-  url: string;
-};
+import { useRef } from "react";
 
 interface VideoPlayerProps {
   movieId: number;
@@ -20,136 +13,9 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className = "" }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [playback, setPlayback] = useState<PlaybackLinkDTO | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<"general" | "premium" | "auth">("general");
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const { accessToken } = useAuthStore();
-  const { data: payments } = useGetPaymentsByUser();
   const router = useRouter();
-
-  const hasActiveSubscription = payments?.some(
-    (payment) => payment.paymentStatus === "SUCCESS" && payment.pricingId !== "free"
-  );
-
-  const streamUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/movies/${movieId}/stream`;
-
-  useEffect(() => {
-    let mounted = true;
-
-    const loadPlayback = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        if (!accessToken) {
-          setErrorType("auth");
-          setError("Please login to watch this video");
-          setIsLoading(false);
-          return;
-        }
-
-        const data = await getPlaybackLink(String(movieId)); // { type, url }
-        if (!mounted) return;
-
-        setPlayback(data);
-        setIsLoading(false);
-      } catch (err: unknown) {
-        if (!mounted) return;
-        const status = (err as { response?: { status?: number } })?.response?.status;
-
-        if (status === 403) {
-          setErrorType(hasActiveSubscription ? "general" : "premium");
-          setError(
-            hasActiveSubscription
-              ? "System error: You have a subscription but are still blocked when loading video."
-              : "This video requires a Premium subscription to watch"
-          );
-        } else if (status === 401) {
-          setErrorType("auth");
-          setError("Please login to watch this video");
-        } else {
-          setErrorType("general");
-          setError("Cannot load video");
-        }
-        setIsLoading(false);
-      }
-    };
-
-    loadPlayback();
-    return () => {
-      mounted = false;
-    };
-  }, [movieId, accessToken, hasActiveSubscription]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (!playback || playback.type !== "direct") return;
-
-    let revoked = false;
-
-    const loadBlob = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const response = await fetch(streamUrl, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-
-        if (!response.ok) {
-          if (response.status === 403) {
-            setErrorType(hasActiveSubscription ? "general" : "premium");
-            throw new Error(
-              hasActiveSubscription
-                ? "System error: You have a subscription but are still blocked when loading video."
-                : "This video requires a Premium subscription to watch"
-            );
-          } else if (response.status === 401) {
-            setErrorType("auth");
-            throw new Error("Please login to watch this video");
-          } else {
-            setErrorType("general");
-            throw new Error(`HTTP ${response.status} - Cannot load video`);
-          }
-        }
-
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        video.src = blobUrl;
-
-        video.addEventListener("loadstart", () => setIsLoading(false));
-        video.addEventListener("error", () => {
-          setError("Cannot play video");
-          setIsLoading(false);
-        });
-        video.addEventListener("canplay", () => setIsLoading(false));
-        video.addEventListener("canplaythrough", () => {
-          video.play().catch(() => {
-            console.log("Auto-play prevented");
-          });
-        });
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Unknown error";
-        setError(message);
-        if (!message.includes("Premium") && !message.includes("đăng nhập")) {
-          setErrorType("general");
-        }
-        setIsLoading(false);
-      }
-    };
-
-    loadBlob();
-
-    return () => {
-      if (video && video.src && !revoked) {
-        URL.revokeObjectURL(video.src);
-        revoked = true;
-      }
-    };
-  }, [playback, streamUrl, accessToken, hasActiveSubscription]);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { playback, videoRef, isLoading, error } = useVideoPlayer({ movieId });
 
   const handleUpgradeClick = () => router.push(ROUTES.subscriptions);
   const handleLoginClick = () => router.push(ROUTES.signIn);
@@ -158,7 +24,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
     return (
       <div className={`relative flex h-full w-full items-center justify-center rounded-xl bg-black ${className}`}>
         <div className="max-w-md p-8 text-center">
-          {errorType === "premium" ? (
+          {error.type === "premium" ? (
             <div className="space-y-6">
               <div className="flex justify-center">
                 <div className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 p-4">
@@ -196,7 +62,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
                 )}
               </div>
             </div>
-          ) : errorType === "auth" ? (
+          ) : error.type === "auth" ? (
             <div className="space-y-6">
               <div className="flex justify-center">
                 <div className="rounded-full bg-blue-500 p-4">
@@ -236,7 +102,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
           ) : (
             <div className="space-y-4">
               <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-                <strong>Error:</strong> {error}
+                <strong>Error:</strong> {error.message}
               </div>
               {onClose && (
                 <button
@@ -269,10 +135,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ movieId, onClose, className =
     <div className={`relative h-full w-full rounded-xl bg-black ${className}`}>
       {playback?.type === "bunny-embed" ? (
         <iframe
+          ref={iframeRef}
           src={playback.url}
           className="h-full w-full rounded-xl"
           allow="autoplay; fullscreen; encrypted-media"
           allowFullScreen
+          title={`Movie ${movieId} Player`}
+          sandbox="allow-same-origin allow-scripts allow-presentation allow-top-navigation-by-user-activation"
         />
       ) : (
         <video ref={videoRef} controls className="h-full w-full rounded-xl object-cover" preload="metadata" playsInline>

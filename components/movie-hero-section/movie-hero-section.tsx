@@ -61,9 +61,8 @@ export const MovieHeroSection = () => {
             </div>
           ))}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/0 to-[#141414]/0"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/0 to-[#141414]/0"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#141414]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#141414] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
       </div>
 
       <div className="relative z-10 flex h-full flex-col items-center justify-end gap-10 px-10 py-10 pb-5">

@@ -12,7 +12,20 @@ import { ROUTES } from "@/lib/routes";
 import defaultAvatar from "@/public/logos/default-avatar.svg";
 import streamVibeLogo from "@/public/logos/stream-vibe-logo.svg";
 import { useAuthStore } from "@/stores/auth.store";
-import { Bell, CreditCard, HeadphonesIcon, Heart, Home, LogOut, Menu, Play, Search, User, X } from "lucide-react";
+import {
+  Bell,
+  Clock,
+  CreditCard,
+  HeadphonesIcon,
+  Heart,
+  Home,
+  LogOut,
+  Menu,
+  Play,
+  Search,
+  User,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -122,6 +135,10 @@ export const Header: React.FC = () => {
         <div className="flex shrink-0 items-center gap-[30px]">
           <Link href={ROUTES.favorites} className="relative">
             <Heart className="h-5 w-5 text-white" />
+          </Link>
+
+          <Link href={ROUTES.watchHistory} className="relative">
+            <Clock className="h-5 w-5 text-white" />
           </Link>
 
           <SearchDialog />

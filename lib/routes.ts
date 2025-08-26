@@ -6,6 +6,7 @@ export const ROUTES = {
   support: "/support",
   notifications: "/notifications",
   favorites: "/favorites",
+  watchHistory: "/watch-history",
 
   // User routes
   profile: "/profile",

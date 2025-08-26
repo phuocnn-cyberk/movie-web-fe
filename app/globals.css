@@ -145,24 +145,34 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    color-scheme: dark !important;
   }
+
+  html {
+    color-scheme: dark !important;
+  }
+
   body {
     @apply bg-background text-foreground;
     scroll-behavior: smooth;
+    color-scheme: dark !important;
   }
 
-  /* Enhanced smooth scrolling with offset for fixed headers */
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
+  /* Force dark theme for form controls */
+  input,
+  textarea,
+  select,
+  button,
+  option {
+    color-scheme: dark !important;
   }
 
-  /* Respect user preference for reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
+  body[data-scroll-locked] {
+    margin-right: 0px !important;
+  }
+
+  html {
+    overflow-y: scroll;
   }
 
   /* Smooth theme transitions */
@@ -196,6 +206,7 @@
     from {
       opacity: 0.8;
     }
+
     to {
       opacity: 1;
     }
@@ -208,14 +219,31 @@
 }
 
 @layer utilities {
+
   /* Horizontal ticker animation - only for mobile */
   @keyframes ticker-scroll {
     0% {
       transform: translateX(0);
     }
+
     100% {
       transform: translateX(-66%);
     }
+  }
+
+  /* Moving border rotation animation */
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg) scale(10);
+    }
+
+    100% {
+      transform: rotate(-360deg) scale(10);
+    }
+  }
+
+  .animate-rotate {
+    animation: rotate 2s linear infinite;
   }
 
   .ticker-container {

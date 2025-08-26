@@ -4,7 +4,7 @@ import { Header } from "@/components/common/header";
 import { MovieGrid } from "@/components/movie-grid/movie-grid";
 import { useMoviesData } from "@/hooks/movies/useMoviesData";
 
-export default function FavoritesPage() {
+export default function WatchHistoryPage() {
   const { favoriteMovies, isLoading, error } = useMoviesData();
 
   if (isLoading) return <div>Loading...</div>;
@@ -13,7 +13,7 @@ export default function FavoritesPage() {
   return (
     <main className="min-h-screen w-full bg-[#0F0F0F] pt-[120px]">
       <Header />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto max-w-[1200px] px-4 py-8">
         <h1 className="mb-8 text-4xl font-bold text-white">My Favorites</h1>
         {favoriteMovies.length > 0 ? (
           <MovieGrid movies={favoriteMovies} />
