@@ -10,12 +10,8 @@ export default function SubscriptionsPage() {
     <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
       <Header />
       <main className="w-full pt-[120px] dark:bg-[#0F0F0F]">
-        <div className="w-full px-20">
-          <div className="mx-auto max-w-[1596px]">
-            <PricingSection />
-            <PlanComparison />
-          </div>
-        </div>
+        <PricingSection />
+        <PlanComparison />
       </main>
       <Footer />
     </div>

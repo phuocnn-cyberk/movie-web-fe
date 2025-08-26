@@ -13,7 +13,7 @@ export default function WatchHistoryPage() {
   return (
     <main className="min-h-screen w-full bg-[#0F0F0F] pt-[120px]">
       <Header />
-      <div className="container mx-auto max-w-[1200px] px-4 py-8">
+      <div className="container mx-auto p-20">
         <h1 className="mb-8 text-4xl font-bold text-white">My Favorites</h1>
         {favoriteMovies.length > 0 ? (
           <MovieGrid movies={favoriteMovies} />

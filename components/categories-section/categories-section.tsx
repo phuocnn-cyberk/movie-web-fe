@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import { TextFade } from "../ui/text-fade";
 
 const getGenreDescription = (genreName: string): string => {
   const descriptions: { [key: string]: string } = {
@@ -157,13 +158,17 @@ export const CategoriesSection: React.FC = () => {
       <div className="mx-auto flex w-full max-w-[1597px] flex-col gap-20">
         <div className="flex flex-col gap-20 lg:flex-row lg:items-end lg:justify-between lg:gap-25">
           <div className="flex flex-1 flex-col gap-3.5">
-            <h1 className="text-left text-4xl leading-[1.5em] font-bold text-white md:text-5xl lg:text-[38px]">
-              Explore our wide variety of categories
-            </h1>
-            <p className="text-left text-lg leading-[1.5em] font-normal text-[#999999]">
-              Whether you&apos;re looking for a comedy to make you laugh, a drama to make you think, or a documentary to
-              learn something new
-            </p>
+            <TextFade direction="up">
+              <h1 className="text-left text-4xl leading-[1.5em] font-bold text-white md:text-5xl lg:text-[38px]">
+                Explore our wide variety of categories
+              </h1>
+            </TextFade>
+            <TextFade direction="up">
+              <p className="text-left text-lg leading-[1.5em] font-normal text-[#999999]">
+                Whether you&apos;re looking for a comedy to make you laugh, a drama to make you think, or a documentary
+                to learn something new
+              </p>
+            </TextFade>
           </div>
 
           <div

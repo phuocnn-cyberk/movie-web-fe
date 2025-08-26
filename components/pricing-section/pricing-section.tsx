@@ -17,25 +17,31 @@ export const PricingSection: React.FC = () => {
     return [...(data?.monthly ?? []), ...(data?.yearly ?? [])];
   }, [data]);
 
-  const pricingIdToPlan = useMemo(() => {
-    const map = new Map<string, (typeof allPlans)[number]>();
-    for (const p of allPlans) map.set(p.id, p);
-    return map;
-  }, [allPlans]);
-
   const activePricingIdSet = useMemo(() => {
     const completed = (payments ?? []).filter((p) => p.paymentStatus === "SUCCESS");
     return new Set(completed.map((p) => p.pricingId));
   }, [payments]);
 
-  const isAnyFreeActive = useMemo(() => {
-    const completed = (payments ?? []).filter((p) => p.paymentStatus === "SUCCESS");
-    return completed.some((pay) => pricingIdToPlan.get(pay.pricingId)?.price === "Free");
-  }, [payments, pricingIdToPlan]);
+  const highestPriorityActivePlanId = useMemo(() => {
+    const activePaidPlans = allPlans.filter((p) => activePricingIdSet.has(p.id) && p.price !== "Free");
+
+    if (activePaidPlans.length === 0) {
+      return null;
+    }
+
+    const yearlyPlans = data?.yearly ?? [];
+    const activeYearlyPlan = activePaidPlans.find((p) => yearlyPlans.some((yp) => yp.id === p.id));
+
+    if (activeYearlyPlan) {
+      return activeYearlyPlan.id;
+    }
+
+    return activePaidPlans[0].id;
+  }, [allPlans, activePricingIdSet, data]);
 
   return (
-    <section id="pricing" className="w-full p-20 dark:bg-[#0F0F0F]">
-      <div className="container mx-auto px-4">
+    <section id="pricing" className="w-full dark:bg-[#0F0F0F]">
+      <div className="p-20">
         <div className="mb-20 flex flex-col gap-10 md:flex-row md:items-end md:justify-between md:gap-25">
           <PricingHeader />
 
@@ -75,7 +81,7 @@ export const PricingSection: React.FC = () => {
                 price={plan.price}
                 period={plan.price === "Free" ? "" : (plan.period ?? (billingPeriod === "yearly" ? "/year" : "/month"))}
                 comingSoon={plan.comingSoon || false}
-                isActive={plan.price === "Free" ? isAnyFreeActive : activePricingIdSet.has(plan.id)}
+                isActive={plan.id === highestPriorityActivePlanId}
               />
             ))}
 

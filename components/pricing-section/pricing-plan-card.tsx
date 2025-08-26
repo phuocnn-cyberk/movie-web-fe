@@ -25,8 +25,16 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
   const { mutateAsync, isPending } = useCreatePaypalOrder();
   const queryClient = useQueryClient();
 
+  const isFreePlan = price === "Free";
+  const isPlanActive = isActive && !isFreePlan;
+
   const handleSubscribe = async () => {
-    if (comingSoon || isActive) return;
+    if (isFreePlan) {
+      router.push(ROUTES.moviesShows);
+      return;
+    }
+
+    if (comingSoon || isPlanActive) return;
     const userId = authState.user?.userID;
     if (!userId) {
       router.push(ROUTES.signIn);
@@ -42,10 +50,10 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
         toast.success(urlOrMessage);
         queryClient.invalidateQueries({ queryKey: ["payments"] });
       } else {
-        toast.error("Không nhận được phản hồi hợp lệ từ máy chủ.");
+        toast.error("Invalid response from server.");
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Tạo đơn thanh toán thất bại";
+      const message = error instanceof Error ? error.message : "Failed to create payment order";
       toast.error(message);
     }
   };
@@ -55,7 +63,7 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-center gap-3">
           <h3 className="text-2xl leading-tight font-bold text-white">{title}</h3>
-          {isActive && <Badge className="bg-[#E50000] text-white">Active</Badge>}
+          {isPlanActive && <Badge className="bg-[#E50000] text-white">Current Plan</Badge>}
         </div>
         <p className="text-lg leading-tight font-normal text-[#999999]">{description}</p>
       </div>
@@ -68,17 +76,17 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
       <div className="mt-auto flex w-full flex-col gap-4">
         <Button
           className="cursor-pointer rounded-lg bg-[#E50000] p-6 text-lg font-semibold text-white hover:bg-[#E50000]/80"
-          disabled={comingSoon || isPending || isActive}
+          disabled={comingSoon || isPending || isPlanActive}
           onClick={handleSubscribe}
         >
-          {isActive
-            ? "Active"
+          {comingSoon
+            ? "Coming Soon"
             : isPending
               ? "Processing..."
-              : comingSoon
-                ? "Coming Soon"
-                : price === "Free"
-                  ? "Start Free Trial"
+              : isFreePlan
+                ? "Start Free Trial"
+                : isPlanActive
+                  ? "Active"
                   : "Subscribe"}
         </Button>
       </div>

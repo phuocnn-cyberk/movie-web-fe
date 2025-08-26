@@ -1,5 +1,6 @@
 "use client";
 
+import { TextFade } from "@/components/ui/text-fade";
 import { Check, X } from "lucide-react";
 import React from "react";
 
@@ -51,15 +52,19 @@ export const PlanComparison: React.FC = () => {
   };
 
   return (
-    <section className="w-full py-20">
+    <section className="w-full p-20">
       <div className="mb-20">
-        <h2 className="mb-4 font-[Manrope] text-[48px] font-bold text-white">Compare Subscription Plans</h2>
-        <p className="font-[Manrope] text-[18px] text-[#999999]">
-          Below is a comparison between the Free and Premium plans.
-        </p>
+        <TextFade direction="up">
+          <h2 className="mb-4 font-[Manrope] text-[48px] font-bold text-white">Compare Subscription Plans</h2>
+        </TextFade>
+        <TextFade direction="up">
+          <p className="font-[Manrope] text-[18px] text-[#999999]">
+            Below is a comparison between the Free and Premium plans.
+          </p>
+        </TextFade>
       </div>
 
-      <div className="min-w-[600px] overflow-x-auto rounded-xl border border-[#262626]">
+      <div className="overflow-x-auto rounded-xl border border-[#262626]">
         <div className="grid grid-cols-3 border-b border-[#262626] bg-[#0F0F0F]">
           <div className="p-6 text-center text-[18px] font-semibold text-white">Feature</div>
           <div className="border-l border-[#262626] p-6 text-center text-[18px] font-semibold text-white">Free</div>
