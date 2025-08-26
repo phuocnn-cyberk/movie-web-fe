@@ -28,11 +28,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { SearchDialog } from "../search/search-dialog";
 
 export const Header: React.FC = () => {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -44,6 +45,7 @@ export const Header: React.FC = () => {
   useCurrentUser();
 
   const handleSignOut = () => {
+    router.push(ROUTES.signIn);
     actions.clearAuth();
   };
 

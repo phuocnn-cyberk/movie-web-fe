@@ -60,7 +60,7 @@ export default function NotificationsPage() {
     <div className="min-h-screen w-full overflow-x-hidden dark:bg-[#202020]">
       <Header />
       <main className="min-h-screen w-full bg-[#0F0F0F] pt-[120px]">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto max-w-[1200px] px-4 py-8">
           <div className="mb-8">
             <div className="mb-4 flex items-center gap-3">
               <Bell className="h-8 w-8 text-white" />
