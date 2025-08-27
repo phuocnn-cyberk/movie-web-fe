@@ -179,6 +179,14 @@ export const getWatchHistory = async (): Promise<WatchHistory[]> => {
   return response.data;
 };
 
+export const updateWatchProgress = async (
+  movieId: number,
+  data: { percent: number }
+) => {
+  const response = await api.patch(`/api/history/${movieId}/progress`, data);
+  return response.data;
+};
+
 export const ratingMovie = async (data: Rating): Promise<Rating> => {
   const response = await api.post(`/api/ratings`, data);
   return response.data;
