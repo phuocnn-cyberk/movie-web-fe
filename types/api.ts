@@ -153,6 +153,7 @@ export interface WatchHistory {
   movieId: number;
   movieTitle: string;
   moviePoster: string;
-  watchedAt: string;
-  watchedMinutes: number;
+  watchedAt: string;       // thời điểm xem gần nhất
+  watchedPercent: number;  // % đã xem
 }
+

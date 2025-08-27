@@ -40,6 +40,14 @@ export const MovieGrid = ({ movies, watchHistoryMode = false, watchHistoryData =
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
+              {watchHistoryMode && watchHistory && (
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-700">
+                  <div
+                    className="h-1 bg-[#E50000]"
+                    style={{ width: `${watchHistory.watchedPercent}%` }}
+                  />
+                </div>
+              )}
 
               <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <div className="flex items-center gap-2">
@@ -81,17 +89,15 @@ export const MovieGrid = ({ movies, watchHistoryMode = false, watchHistoryData =
               {watchHistoryMode && watchHistory ? (
                 <div className="flex flex-col gap-2 text-xs text-[#999999]">
                   <div className="flex items-center justify-between">
-                    <span className="font-[Manrope]">Watched:</span>
+                    <span className="font-[Manrope]">Trạng thái:</span>
                     <span className="font-[Manrope] font-medium text-[#E50000]">
-                      {watchHistory.watchedMinutes === 0
+                      {watchHistory.watchedPercent === 0
                         ? "Vừa bắt đầu"
-                        : watchHistory.watchedMinutes < 60
-                          ? `${watchHistory.watchedMinutes} phút`
-                          : `${Math.floor(watchHistory.watchedMinutes / 60)}h ${watchHistory.watchedMinutes % 60}m`}
+                        : `Đã xem ${watchHistory.watchedPercent}%`}
                     </span>
                   </div>
                   <div className="font-[Manrope]">
-                    Started: {new Date(watchHistory.watchedAt).toLocaleDateString("en-US")}
+                    Bắt đầu: {new Date(watchHistory.watchedAt).toLocaleDateString("vi-VN")}
                   </div>
                 </div>
               ) : (
@@ -100,6 +106,7 @@ export const MovieGrid = ({ movies, watchHistoryMode = false, watchHistoryData =
                   <span className="font-[Manrope]">{movie.year}</span>
                 </div>
               )}
+
             </div>
           </div>
         );
