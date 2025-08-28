@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useMovieInteractions } from "@/hooks/favourite/useMovieInteractions";
+import { formatTimeAgo } from "@/lib/utils";
 import { Movie, WatchHistory } from "@/types/api";
 import { Bookmark, Heart, Play } from "lucide-react";
 import Image from "next/image";
@@ -79,20 +80,8 @@ export const MovieGrid = ({ movies, watchHistoryMode = false, watchHistoryData =
               </h3>
 
               {watchHistoryMode && watchHistory ? (
-                <div className="flex flex-col gap-2 text-xs text-[#999999]">
-                  <div className="flex items-center justify-between">
-                    <span className="font-[Manrope]">Watched:</span>
-                    <span className="font-[Manrope] font-medium text-[#E50000]">
-                      {watchHistory.watchedMinutes === 0
-                        ? "Vừa bắt đầu"
-                        : watchHistory.watchedMinutes < 60
-                          ? `${watchHistory.watchedMinutes} phút`
-                          : `${Math.floor(watchHistory.watchedMinutes / 60)}h ${watchHistory.watchedMinutes % 60}m`}
-                    </span>
-                  </div>
-                  <div className="font-[Manrope]">
-                    Started: {new Date(watchHistory.watchedAt).toLocaleDateString("en-US")}
-                  </div>
+                <div className="text-xs text-[#999999]">
+                  <span className="font-[Manrope]">Watched {formatTimeAgo(watchHistory.watchedAt)}</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-xs text-[#999999]">
