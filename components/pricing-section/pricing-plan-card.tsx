@@ -3,13 +3,18 @@ import { ROUTES } from "@/lib/routes";
 import { useAuthStore } from "@/stores/auth.store";
 import { PricingPlan } from "@/types/api";
 import { useQueryClient } from "@tanstack/react-query";
+import { InfoIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 
-type PricingPlanCardProps = PricingPlan & { isActive?: boolean };
+type PricingPlanCardProps = PricingPlan & {
+  isActive?: boolean;
+  isDisabledByConflict?: boolean;
+  conflictReason?: string;
+};
 
 export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
   id,
@@ -19,6 +24,8 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
   period = "/month",
   comingSoon = false,
   isActive = false,
+  isDisabledByConflict = false,
+  conflictReason,
 }) => {
   const router = useRouter();
   const authState = useAuthStore();
@@ -27,6 +34,7 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
 
   const isFreePlan = price === "Free";
   const isPlanActive = isActive && !isFreePlan;
+  const isDisabled = comingSoon || isPlanActive || isDisabledByConflict;
 
   const handleSubscribe = async () => {
     if (isFreePlan) {
@@ -34,7 +42,12 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
       return;
     }
 
-    if (comingSoon || isPlanActive) return;
+    if (isDisabled) {
+      if (isDisabledByConflict && conflictReason) {
+        toast.info(conflictReason);
+      }
+      return;
+    }
     const userId = authState.user?.userID;
     if (!userId) {
       router.push(ROUTES.signIn);
@@ -75,8 +88,12 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
 
       <div className="mt-auto flex w-full flex-col gap-4">
         <Button
-          className="cursor-pointer rounded-lg bg-[#E50000] p-6 text-lg font-semibold text-white hover:bg-[#E50000]/80"
-          disabled={comingSoon || isPending || isPlanActive}
+          className={`rounded-lg p-6 text-lg font-semibold ${
+            isDisabledByConflict
+              ? "cursor-not-allowed bg-[#666666] text-[#999999] hover:bg-[#666666]"
+              : "cursor-pointer bg-[#E50000] text-white hover:bg-[#E50000]/80"
+          }`}
+          disabled={isDisabled || isPending}
           onClick={handleSubscribe}
         >
           {comingSoon
@@ -87,8 +104,19 @@ export const PricingPlanCard: React.FC<PricingPlanCardProps> = ({
                 ? "Start Free Trial"
                 : isPlanActive
                   ? "Active"
-                  : "Subscribe"}
+                  : isDisabledByConflict
+                    ? "Không khả dụng"
+                    : "Subscribe"}
         </Button>
+
+        {isDisabledByConflict && conflictReason && (
+          <div className="rounded-lg border border-[#333333] bg-[#2A2A2A] p-3 text-center text-sm text-[#999999]">
+            <span className="flex items-center justify-center gap-2 text-[#FFB800]">
+              <InfoIcon className="h-4 w-4" />
+              {conflictReason}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

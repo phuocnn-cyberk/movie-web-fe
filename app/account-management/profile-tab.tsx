@@ -18,6 +18,7 @@ export function ProfileTab() {
   const { user } = useAuthStore();
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,29 +26,23 @@ export function ProfileTab() {
   const uploadAvatarMutation = useUploadAvatar();
   const { refetch: refetchUser } = useCurrentUser();
 
-  // Cập nhật state khi user thay đổi
-  const handleUserChange = React.useCallback(() => {
+  React.useEffect(() => {
     if (user) {
       setName(user.name || "");
       setPhone(user.phone || "");
     }
   }, [user]);
 
-  // Effect để lắng nghe thay đổi user
-  React.useEffect(() => {
-    handleUserChange();
-  }, [handleUserChange]);
-
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        toast.error("Vui lòng chọn file hình ảnh");
+        toast.error("Please select an image file");
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("File quá lớn. Vui lòng chọn file nhỏ hơn 5MB");
+        toast.error("File is too large. Please select a file smaller than 5MB");
         return;
       }
 
@@ -60,13 +55,13 @@ export function ProfileTab() {
 
   const handleUploadAvatar = async () => {
     if (!selectedFile) {
-      toast.error("Vui lòng chọn file để upload");
+      toast.error("Please select a file to upload");
       return;
     }
 
     try {
       await uploadAvatarMutation.mutateAsync(selectedFile);
-      toast.success("Upload avatar thành công!");
+      toast.success("Upload avatar successfully!");
 
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -74,10 +69,9 @@ export function ProfileTab() {
         fileInputRef.current.value = "";
       }
 
-      // Refetch user data để đảm bảo avatar được cập nhật
       await refetchUser();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Upload avatar thất bại");
+      toast.error(error instanceof Error ? error.message : "Upload avatar failed");
     }
   };
 
@@ -89,13 +83,29 @@ export function ProfileTab() {
     }
   };
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(e.target.value);
+    if (phoneError) {
+      setPhoneError(null);
+    }
+  };
+
   const handleUpdateProfile = async () => {
+    const phoneRegex = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
+    if (phone && !phoneRegex.test(phone)) {
+      setPhoneError("Phone number is not valid.");
+      toast.error("Phone number is not valid.");
+      return;
+    }
+    setPhoneError(null);
+
     try {
       const response = await updateProfile({ name, phone });
       if (response) {
         toast.success("Profile updated successfully");
         setName(response.name || "");
         setPhone(response.phone || "");
+        await refetchUser();
       }
     } catch {
       toast.error("Failed to update profile");
@@ -116,7 +126,8 @@ export function ProfileTab() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Phone Number</Label>
-            <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Input id="phone" value={phone} onChange={handlePhoneChange} />
+            {phoneError && <p className="mt-1 text-sm text-red-500">{phoneError}</p>}
           </div>
         </div>
 

@@ -2,7 +2,9 @@
 
 import { useGetAllPlans } from "@/hooks/subcriptions/useGetAllPlan";
 import { useGetPaymentsByUser } from "@/hooks/subcriptions/useGetPaymentsByUser";
-import React, { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
 import { PricingHeader } from "./pricing-header";
 import { PricingPlanCard } from "./pricing-plan-card";
 
@@ -10,6 +12,16 @@ export const PricingSection: React.FC = () => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
   const { data, isLoading, isError } = useGetAllPlans();
   const { data: payments } = useGetPaymentsByUser();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const payment = searchParams.get("payment");
+    if (payment === "success") {
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["plans"] });
+    }
+  }, [searchParams, queryClient]);
 
   const plans = data ? data[billingPeriod] : [];
 
@@ -22,6 +34,25 @@ export const PricingSection: React.FC = () => {
     return new Set(completed.map((p) => p.pricingId));
   }, [payments]);
 
+  const conflictProtection = useMemo(() => {
+    const yearlyPlans = data?.yearly ?? [];
+    const monthlyPlans = data?.monthly ?? [];
+
+    const allActivePlans = allPlans.filter((p) => activePricingIdSet.has(p.id) && p.price !== "Free");
+
+    const hasActiveYearly = allActivePlans.some((p) => yearlyPlans.some((yp) => yp.id === p.id));
+
+    const hasActiveMonthly = allActivePlans.some((p) => monthlyPlans.some((mp) => mp.id === p.id));
+
+    return {
+      hasActiveYearly,
+      hasActiveMonthly,
+      allActivePlans,
+      shouldDisableMonthly: hasActiveYearly,
+      shouldDisableYearly: false,
+    };
+  }, [allPlans, activePricingIdSet, data]);
+
   const highestPriorityActivePlanId = useMemo(() => {
     const activePaidPlans = allPlans.filter((p) => activePricingIdSet.has(p.id) && p.price !== "Free");
 
@@ -30,10 +61,18 @@ export const PricingSection: React.FC = () => {
     }
 
     const yearlyPlans = data?.yearly ?? [];
-    const activeYearlyPlan = activePaidPlans.find((p) => yearlyPlans.some((yp) => yp.id === p.id));
+    const monthlyPlans = data?.monthly ?? [];
 
-    if (activeYearlyPlan) {
-      return activeYearlyPlan.id;
+    const activeYearlyPlans = activePaidPlans.filter((p) => yearlyPlans.some((yp) => yp.id === p.id));
+
+    if (activeYearlyPlans.length > 0) {
+      return activeYearlyPlans[0].id;
+    }
+
+    const activeMonthlyPlans = activePaidPlans.filter((p) => monthlyPlans.some((mp) => mp.id === p.id));
+
+    if (activeMonthlyPlans.length > 0) {
+      return activeMonthlyPlans[0].id;
     }
 
     return activePaidPlans[0].id;
@@ -72,18 +111,38 @@ export const PricingSection: React.FC = () => {
 
           {!isLoading &&
             !isError &&
-            plans.map((plan) => (
-              <PricingPlanCard
-                key={plan.id}
-                id={plan.id}
-                title={plan.title}
-                description={plan.description}
-                price={plan.price}
-                period={plan.price === "Free" ? "" : (plan.period ?? (billingPeriod === "yearly" ? "/year" : "/month"))}
-                comingSoon={plan.comingSoon || false}
-                isActive={plan.id === highestPriorityActivePlanId}
-              />
-            ))}
+            plans.map((plan) => {
+              const isCurrentPeriodDisabled =
+                (billingPeriod === "monthly" && conflictProtection.shouldDisableMonthly) ||
+                (billingPeriod === "yearly" && conflictProtection.shouldDisableYearly);
+
+              const isThisPlanActive = plan.id === highestPriorityActivePlanId;
+
+              const shouldDisableThisPlan = isCurrentPeriodDisabled && !isThisPlanActive;
+
+              return (
+                <PricingPlanCard
+                  key={plan.id}
+                  id={plan.id}
+                  title={plan.title}
+                  description={plan.description}
+                  price={plan.price}
+                  period={
+                    plan.price === "Free" ? "" : (plan.period ?? (billingPeriod === "yearly" ? "/year" : "/month"))
+                  }
+                  comingSoon={plan.comingSoon || false}
+                  isActive={isThisPlanActive}
+                  isDisabledByConflict={shouldDisableThisPlan}
+                  conflictReason={
+                    shouldDisableThisPlan
+                      ? billingPeriod === "monthly" && conflictProtection.hasActiveYearly
+                        ? "You already have an active yearly plan"
+                        : "This plan is not available"
+                      : undefined
+                  }
+                />
+              );
+            })}
 
           {!isLoading && !isError && plans.length === 0 && (
             <div className="col-span-full text-center text-[#999999]">No plans available</div>
